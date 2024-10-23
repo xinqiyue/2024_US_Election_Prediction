@@ -1,10 +1,11 @@
 ---
-title: "My title"
+title: "Prediction of US Election in 2024"
 subtitle: "My subtitle if needed"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: [https://github.com/RohanAlexander/starter_folder](https://github.com/RohanAlexander/starter_folder)."
+  - Xinqi Yue
+  - Yawen Tan
+  - Duanyi Su
+thanks: "Code and data are available at: [https://github.com/xinqiyue/2024_US_Election_Prediction](https://github.com/xinqiyue/2024_US_Election_Prediction)."
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
