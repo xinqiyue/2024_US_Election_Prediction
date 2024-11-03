@@ -26,11 +26,11 @@ if (exists("analysis_data")) {
 
 #### Test data ####
 
-# Check if the dataset has 151 rows
-if (nrow(analysis_data) == 151) {
-  message("Test Passed: The dataset has 151 rows.")
+# Check if the dataset has 100 rows
+if (nrow(analysis_data) == 100) {
+  message("Test Passed: The dataset has 100 rows.")
 } else {
-  stop("Test Failed: The dataset does not have 151 rows.")
+  stop("Test Failed: The dataset does not have 100 rows.")
 }
 
 # Check if the dataset has 3 columns
@@ -48,9 +48,12 @@ if (n_distinct(analysis_data$division) == nrow(analysis_data)) {
 }
 
 # Check if the 'state' column contains only valid Australian state names
-valid_states <- c("New South Wales", "Victoria", "Queensland", "South Australia", 
-                  "Western Australia", "Tasmania", "Northern Territory", 
-                  "Australian Capital Territory")
+valid_states <- c("National", "Arizona", "California", "Georgia", "North Carolina", 
+                  "Washington", "Pennsylvania", "New Hampshire", "Texas", "Michigan", 
+                  "Nevada", "Wisconsin", "Montana", "Florida", "Ohio", "Massachusetts", "Virginia",
+                  "South Carolina", "Nebraska CD-2", "Minnesota", "New York", "Nebraska", "Maryland",
+                  "New Mexico", "Connecticut", "Rhode Island", "Missouri", "Indiana", "Iowa", "Vermont",
+                  "Maine", "Maine CD-1", "Maine CD-2")
 
 if (all(analysis_data$state %in% valid_states)) {
   message("Test Passed: The 'state' column contains only valid Australian state names.")
@@ -59,7 +62,7 @@ if (all(analysis_data$state %in% valid_states)) {
 }
 
 # Check if the 'party' column contains only valid party names
-valid_parties <- c("Labor", "Liberal", "Greens", "National", "Other")
+valid_parties <- c("DEM", "REP")
 
 if (all(analysis_data$party %in% valid_parties)) {
   message("Test Passed: The 'party' column contains only valid party names.")

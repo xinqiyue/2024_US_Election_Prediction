@@ -17,24 +17,42 @@ president_polls_raw_data <- read.csv('data/01-raw_data/president_polls.csv')
 # 过滤出高质量民调（numeric_grade >= 2.5）的民调
 president_polls_filtered <- president_polls_raw_data %>% 
   janitor::clean_names() %>%
-  select(pollster, numeric_grade, pollscore, methodology, transparency_score, state, 
-         start_date, end_date, sample_size, population, population_full, 
-         hypothetical, party, answer, candidate_name, pct) %>%
+  select(# pollster,
+    numeric_grade,# pollscore,
+         # methodology,
+         # transparency_score,
+         state, 
+         # start_date, 
+         end_date, 
+         sample_size,
+         #population, population_full,
+         # hypothetical,
+         answer, candidate_name, pct) %>%
   tidyr::drop_na()
 
 president_polls_cleaned_data <- president_polls_filtered %>%
   mutate(
-    hypothetical = ifelse(hypothetical == 'true', 1, 0),
+    #hypothetical = ifelse(hypothetical == 'true', 1, 0),
     state = if_else(is.na(state) | state == "", "National", state), 
     end_date = mdy(end_date),
-    start_date = mdy(start_date),
+    #start_date = mdy(start_date),
     num_candidates = round((pct / 100) * sample_size, 0) # 将百分比转换为人数
 ) %>%
   filter(numeric_grade >= 2.5
          , candidate_name %in% c("Kamala Harris", "Donald Trump")
-         , end_date >= as.Date("2024-07-01")
-         , !is.na(end_date))  # 去除缺失的日期
-
+         , end_date >= as.Date("2024-07-21")
+         , !is.na(end_date)  # eliminate date that is null
+) %>%
+  select(# pollster, numeric_grade, pollscore,
+    # methodology,
+    # transparency_score,
+    state, 
+    # start_date, 
+    end_date, 
+    sample_size,
+    #population, population_full, 
+    # hypothetical,
+    answer, candidate_name, pct)
 #### Save data ####
 write_csv(president_polls_cleaned_data, 'data/02-analysis_data/president_polls_cleaned_data.csv')
 #summary(president_polls_cleaned_data)

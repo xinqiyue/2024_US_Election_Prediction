@@ -26,16 +26,15 @@ library(tidyverse)
 #| include: false
 #| warning: false
 #| message: false
-
+# load data
 president_polls_cleaned_data <- read.csv('../data/02-analysis_data/president_polls_cleaned_data.csv')
+# transfer date to standard form
+president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_date)
 ```
 
 
 ```{r}
-# 将日期转换为日期格式
-president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_date)
-
-# 绘图
+# plot graphof pct of two candidates in each state against time
 ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = state)) +
   geom_point() +
   facet_wrap(~ candidate_name, scales = "free_y") +
@@ -47,8 +46,7 @@ ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = state)) 
     color = "state",
     title = "pct of Donald Trump and Kamala Harris in each states",
   )
-
-
+unique(president_polls_cleaned_data$methodology)
 ```
 
 # Introduction
@@ -72,32 +70,50 @@ Telegraphing paragraph: The remainder of this paper is structured as follows. @s
 # Data {#sec-data}
 
 ## Overview
+The dataset encompasses polling data focused on two candidates, Donald Trump and Kamala Harris. Data has been filtered to include only results from pollsters with a numeric grade above 2.5 to maintain quality and consistency. This selection allows us to focus on higher-rated sources, which may enhance the reliability of predictions. Each record includes information on the pollster, their grading, polling methodology, transparency score, and specific polling results for each candidate.
 
-We use the statistical programming language R [@citeR].... Our data [@shelter].... Following @tellingstories, we consider...
+## Explanation of each variables
+- **pollster**: The organization that conducted the poll, providing information on who gathered the data.
+  
+- **numeric grade**: A quality score assigned to the pollster, with higher values indicating greater reliability. Only pollsters with a score above 2.5 are included to enhance accuracy.
 
-Overview text
+- **pollscore**: A specific rating of the individual poll, reflecting additional factors that impact the poll's quality and reliability.
+
+- **methodology**: The method used by the pollster to conduct the poll, which may affect the reliability and interpretation of the results.
+
+- **transparency score**: A measure of how openly the pollster reports their methodology and results. Higher scores suggest greater transparency and reliability.
+
+- **state**: The U.S. state where the poll was conducted, which allows for state-by-state analysis and comparison of support levels.
+
+- **start date**: The date the poll began, marking the beginning of data collection for that specific poll.
+
+- **end date**: The date the poll concluded, marking the end of data collection for that specific poll.
+
+- **sample size**: The number of respondents in the poll, indicating the scope and potential statistical reliability of the results.
+
+- **population**: A general description of the population sampled (e.g., likely voters), providing context on who was surveyed.
+
+- **population full**: Detailed information about the sample population, offering insights into demographic or eligibility characteristics.
+
+- **hypothetical**: Indicates whether the poll was based on a hypothetical scenario, coded as a binary value.
+
+- **party**: The political party affiliation of the respondent or the focus of the poll, when specified.
+
+- **answer**: The poll outcome or response category (e.g., the candidate name or specific answer provided by respondents).
+
+- **candidate_name**: The name of the candidate being polled, which in this data set focuses on Donald Trump and Kamala Harris.
+
+- **pct**: The support percentage each candidate received in the poll, which serves as the outcome variable for analysis.
+
 
 ## Measurement
-	
-Some paragraphs about how we go from a phenomena in the world to an entry in the dataset.
+Key measurements in the dataset include each poll’s numeric_grade (a quality score for the pollster), pollscore (a specific rating per poll), and transparency_score. These indicators help assess and compare the reliability of the included poll results. Additionally, records contain information on sample_size, state, start_date, and end_date, capturing the timing and scope of each poll.
 
 ## Outcome variables
-
-Add graphs, tables and text. Use sub-sub-headings for each outcome variable or update the subheading to be singular.
-
-
-
+The primary outcome variable in this analysis is pct, representing each candidate’s support percentage in individual polls. Focusing on support levels for Trump and Harris enables us to evaluate current sentiment and ultimately predict the election outcome.
 
 ## Predictor variables
-
-Add graphs, tables and text.
-
-Use sub-sub-headings for each outcome variable and feel free to combine a few into one if they go together naturally.
-
-
-
-
-
+Predictor variables include pollster, numeric_grade, pollscore, transparency_score, state, sample_size, population, population_full, and methodology. These factors provide context for each poll’s results and help assess how factors such as sample size, polling method, and geographical scope may influence support percentages.
 
 
 
