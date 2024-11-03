@@ -9,36 +9,46 @@
 
 #### Workspace setup ####
 library(tidyverse)
-
+library(dplyr)
+library(tidyr)
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+president_polls_raw_data <- read.csv('data/01-raw_data/president_polls.csv')
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
+# 过滤出高质量民调（numeric_grade >= 2.5）的民调
+president_polls_filtered <- president_polls_raw_data %>% 
+  janitor::clean_names() %>%
+  select(pollster, numeric_grade, pollscore, methodology, transparency_score, state, 
+         start_date, end_date, sample_size, population, population_full, 
+         hypothetical, party, answer, candidate_name, pct) %>%
   tidyr::drop_na()
 
+president_polls_cleaned_data <- president_polls_filtered %>%
+  mutate(
+    hypothetical = ifelse(hypothetical == 'true', 1, 0),
+    state = if_else(is.na(state) | state == "", "National", state), 
+    end_date = mdy(end_date),
+    start_date = mdy(start_date),
+    num_candidates = round((pct / 100) * sample_size, 0) # 将百分比转换为人数
+) %>%
+  filter(numeric_grade >= 2.5
+         , candidate_name %in% c("Kamala Harris", "Donald Trump")
+         , end_date >= as.Date("2024-07-01")
+         , !is.na(end_date))  # 去除缺失的日期
+
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(president_polls_cleaned_data, 'data/02-analysis_data/president_polls_cleaned_data.csv')
+#summary(president_polls_cleaned_data)
+
+
+
+base_plot <- ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
+  theme_classic() +
+  labs(y = "Candidate Support (%)", x = "Date") 
+#+  scale_x_date(date_labels = "%b %Y")  # 设置 x 轴只显示月份和年份
+
+# 绘制候选人支持率的点图和光滑线
+base_plot + 
+  geom_point() + 
+  geom_smooth(se = FALSE) + 
+  theme(legend.position = "bottom")
+

@@ -20,13 +20,41 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
 ```
 
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+president_polls_cleaned_data <- read.csv('../data/02-analysis_data/president_polls_cleaned_data.csv')
+```
+
+
+```{r}
+# 将日期转换为日期格式
+president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_date)
+
+# 绘图
+ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = state)) +
+  geom_point() +
+  facet_wrap(~ candidate_name, scales = "free_y") +
+  theme_minimal() +
+  #theme(legend.position = "bottom") +
+  labs(
+    y = "pct",
+    x = "end date",
+    color = "state",
+    title = "pct of Donald Trump and Kamala Harris in each states",
+  )
+
+
+```
 
 # Introduction
 
 Overview paragraph
+As the United States prepares for the 2024 presidential election, the role of opinion polls in understanding voter preferences remains critical. Polls serve as indicators of public sentiment, offering insights into which candidates might have an advantage in the electoral race. This paper aims to predict the winner of the upcoming election by analyzing "poll-of-polls" data. 
 
 Estimand paragraph
 
@@ -59,44 +87,6 @@ Add graphs, tables and text. Use sub-sub-headings for each outcome variable or u
 
 
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
-
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-
-analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
-```
-
-Talk way more about it. 
 
 ## Predictor variables
 
