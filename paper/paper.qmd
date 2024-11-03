@@ -34,6 +34,9 @@ president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_da
 
 
 ```{r}
+#| echo: false
+#| warning: false
+#| message: false
 base_plot <- ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
   theme_classic() +
   labs(y = "Candidate Support (%)", x = "Date") 
@@ -50,6 +53,9 @@ base_plot +
 
 
 ```{r}
+#| echo: false
+#| warning: false
+#| message: false
 # plot graph of pct of two candidates in each state against time
 ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct
                                          #, color = state
@@ -68,11 +74,13 @@ ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct
 ```
 
 # Introduction
+The 2024 U.S. presidential election is generating significant public interest, with recent polling reflecting shifts in candidate support across various demographic and regional groups. Polling data, while insightful, presents challenges due to inherent biases, variability in polling methodology, and regional influences on voter behavior. This study aims to address these challenges using a "poll-of-polls" approach, aggregating high-quality national and state polls to forecast voter support for Kamala Harris and Donald Trump. By applying Bayesian modeling, this analysis incorporates both the temporal dynamics of candidate support and state-specific trends.
 
-Overview paragraph
-As the United States prepares for the 2024 presidential election, the role of opinion polls in understanding voter preferences remains critical. Polls serve as indicators of public sentiment, offering insights into which candidates might have an advantage in the electoral race. This paper aims to predict the winner of the upcoming election by analyzing "poll-of-polls" data. 
+In this paper, we explore the following questions: How is support for each candidate likely to evolve as the election approaches? How do regional differences influence overall voter sentiment? This paper contributes to electoral forecasting literature by synthesizing aggregated polling data to provide a nuanced view of candidate support trends.
 
-Estimand paragraph
+# Estimand
+
+Our primary estimand is the percentage of voter support for Donald Trump and Kamala Harris on election day. We estimate this support percentage both at the national level and by state, incorporating time and state-specific effects.
 
 Results paragraph
 
@@ -82,28 +90,17 @@ Telegraphing paragraph: The remainder of this paper is structured as follows. @s
 
 
 
-
-
-
 # Data {#sec-data}
 
-## Overview
+## Data Overview {#sec-data-overview}
 The dataset encompasses polling data focused on two candidates, Donald Trump and Kamala Harris. Data has been filtered to include only results from pollsters with a numeric grade above 2.5 to maintain quality and consistency. This selection allows us to focus on higher-rated sources, which may enhance the reliability of predictions. Each record includes information on the pollster, their grading, polling methodology, transparency score, and specific polling results for each candidate.
-```{r}
-#| label: tbl-raw-data-1
-#| tbl-cap: First 6 entries of Raw Dataset with varibles 'state','end_date','sample_size', 'canadidate_name','pct'
-#| echo: false
-#| warning: false
-#| message: false
 
-raw_data <- read_csv(here::here("data/01-raw_data/president_polls.csv"))
-#Graph
-head_raw_data <- head(raw_data,6)
-# Note there is a type in Description within the original data set itself
-knitr::kable(head_raw_data[, c(13,15,23,51,52)], format = "simple",col.names = c('State','End date','Sample Size', 'Canadidate Name','PCT'))
+The analysis utilizes FiveThirtyEight's dataset of national presidential general election polls [@fivethirtyeight]. Following the approach outlined in [@tellingstories], we aim to predict the election outcome based on this polling data. The analyses were conducted in R @citeR, with support from several packages. The `tidyverse` packages [@citetidyverse] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], data cleaning process was done by using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], and `arrow` package [@citearrow]. Then, models were constructed using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], `rstanarm` [@citerstanarm] package, and `splines` package [@citesplines]. The model results are then presented by `modelsummary` [@citemodelsummary] package, and graphs were made with `ggplot2` package [@citeggplot].
 
-```
+## Data Clean
+We clean the raw data to produce the analysis dataset using the tools listed in the @sec-data-overview, providing high-quality data for subsequent election analysis. Firstly, we standardize column names to lowercase and remove special characters. Then, we retain only the fields relevant to the election analysis, such as `state`, `end_date`, `sample_size`, `candidate_name`, and `pct` (percentage support), simplifying the data structure by removing unnecessary columns. Next, we remove rows with missing values and replace empty values in the `state` column with "National," indicating these records pertain to nationwide polls. Additionally, we convert the `end_date` column to date format, ensuring accuracy in date-based filtering. Then, we filter the data to retain only records that meet specific criteria: a `numeric_grade` of 2.5 or higher, a `candidate_name` of either "Kamala Harris" or "Donald Trump" (focusing on these two candidates' support levels), an `end_date` on or after July 21, 2024 (focusing on recent polling when Biden withdrawal from the election), and a non-empty `end_date` (filtering out records with missing dates).
 
+The cleaned data is displayed in @tbl-analysis-data-1, which contains a total of 5 variables:
 ```{r}
 #| label: tbl-analysis-data-1
 #| tbl-cap: First 6 entries of Analysis Dataset
@@ -118,7 +115,20 @@ knitr::kable(head_analysis_data[, 1:5], format = "simple", col.names = c('State'
 
 ```
 
-## Explanation of each variables
+## Predictors Explanation
+- **state**: The U.S. state where the poll was conducted, which allows for state-by-state analysis and comparison of support levels.
+
+- **end date**: The date the poll concluded, marking the end of data collection for that specific poll.
+
+- **sample size**: The number of respondents in the poll, indicating the scope and potential statistical reliability of the results.
+
+- **candidate_name**: The name of the candidate being polled, which in this data set focuses on Donald Trump and Kamala Harris.
+
+## Outcome Exaplanation
+
+- **pct**: The support percentage each candidate received in the poll, which serves as the outcome variable for analysis.
+
+## Explanation of Other Variables Used
 - **pollster**: The organization that conducted the poll, providing information on who gathered the data.
   
 - **numeric grade**: A quality score assigned to the pollster, with higher values indicating greater reliability. Only pollsters with a score above 2.5 are included to enhance accuracy.
@@ -129,60 +139,131 @@ knitr::kable(head_analysis_data[, 1:5], format = "simple", col.names = c('State'
 
 - **transparency score**: A measure of how openly the pollster reports their methodology and results. Higher scores suggest greater transparency and reliability.
 
-- **state**: The U.S. state where the poll was conducted, which allows for state-by-state analysis and comparison of support levels.
-
-- **start date**: The date the poll began, marking the beginning of data collection for that specific poll.
-
-- **end date**: The date the poll concluded, marking the end of data collection for that specific poll.
-
-- **sample size**: The number of respondents in the poll, indicating the scope and potential statistical reliability of the results.
-
-- **population**: A general description of the population sampled (e.g., likely voters), providing context on who was surveyed.
-
-- **population full**: Detailed information about the sample population, offering insights into demographic or eligibility characteristics.
-
-- **hypothetical**: Indicates whether the poll was based on a hypothetical scenario, coded as a binary value.
-
-- **party**: The political party affiliation of the respondent or the focus of the poll, when specified.
-
-- **answer**: The poll outcome or response category (e.g., the candidate name or specific answer provided by respondents).
-
-- **candidate_name**: The name of the candidate being polled, which in this data set focuses on Donald Trump and Kamala Harris.
-
-- **pct**: The support percentage each candidate received in the poll, which serves as the outcome variable for analysis.
-
-
 ## Measurement
-Key measurements in the dataset include each poll’s numeric_grade (a quality score for the pollster), pollscore (a specific rating per poll), and transparency_score. These indicators help assess and compare the reliability of the included poll results. Additionally, records contain information on sample_size, state, start_date, and end_date, capturing the timing and scope of each poll.
+The goal of this measurement is to turn individual voter opinions into a reliable estimate of electoral college outcomes by analyzing polling data. This data, sourced from @fivethirty—a trusted platform known for high standards—includes only polls that meet rigorous quality criteria, ensuring broad representation of likely U.S. voters. Polls provide essential details, such as the pollster’s identity, survey dates, sample size, and methodology, covering data collection mode, demographic weighting, and adjustments to create a representative sample. These quality standards, while robust, are based on historical practices, which may overlook recent methodological shifts or emerging biases.
 
-## Outcome variables
-The primary outcome variable in this analysis is pct, representing each candidate’s support percentage in individual polls. Focusing on support levels for Trump and Harris enables us to evaluate current sentiment and ultimately predict the election outcome.
+## Limitation
+Polling has inherent limitations. It provides snapshots of voter sentiment at specific times rather than ongoing updates, potentially missing rapid shifts in public opinion, especially near Election Day. Adjustments are made for recency, but participation and response biases—like self-selection and social desirability bias—can still impact accuracy by creating gaps between expressed opinions and actual voting behavior. Additionally, regional polling disparities, with battleground states polled more frequently than “safe” states, can lead to imbalances in representation, highlighting the challenge of achieving uniformly accurate forecasts across the nation.
 
-## Predictor variables
-Predictor variables include pollster, numeric_grade, pollscore, transparency_score, state, sample_size, population, population_full, and methodology. These factors provide context for each poll’s results and help assess how factors such as sample size, polling method, and geographical scope may influence support percentages.
+## Data visualization
+### Exploring the Relationship Between State and PCT
 
+```{r}
+#| label: fig-pct-state
+#| fig-cap: Support for Candidates by State
+#| echo: false
+#| warning: false
+#| message: false
+
+# Load ggplot2
+library(ggplot2)
+
+ggplot(data = president_polls_cleaned_data, aes(x = state, y = pct, fill = candidate_name)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = c("Donald Trump" = "pink", "Kamala Harris" = "lightblue")) + 
+  labs(x = "State",
+       y = "Support Percentage (%)") + # Add X-axis and Y-axis
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
+
+### Exploring the Relationship Between End Date and PCT
+```{r}
+#| label: fig-pct-time
+#| fig-cap: Trends in Candidate Support Over Time
+#| echo: false
+#| warning: false
+#| message: false
+
+# Load ggplot2
+library(ggplot2)
+
+ggplot(data = president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name, group = candidate_name)) +
+  geom_line(size = 1,alpha = 0.5) + 
+  geom_point(size = 1) + # Add data point
+  scale_color_manual(values = c("Donald Trump" = "pink", "Kamala Harris" = "lightblue")) + 
+  labs(x = "State",
+       y = "Support Percentage (%)") + # Add X-axis and Y-axis
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+```
 
 
 # Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+In this analysis, we use a Bayesian linear regression model to estimate the percentage of support (`pct`) for each candidate in the upcoming US presidential election. The model includes key predictors such as polling end date (`end_date`), candidate (`candidate_name`), sample size (`sample_size`), and state (`state`). Each predictor is selected based on its relevance to the variation in candidate support, as discussed in the data section.
 
 ## Model set-up
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+In this Bayesian framework, we assume a normal distribution for poll results influenced by several predictors: end date, candidate name, sample size, and state. We denote $y_i$ as the percentage of votes for a candidate in a given poll, where $beta_i$ represents the candidate effect, $gamma_i$ reflects the influence of sample size, and $delta_i$ corresponds to the state effect.
 
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
+The model can be mathematically expressed as follows:
+
+\begin{align}
+y_i | \mu_i, \sigma &\sim \text{Normal}(\mu_i, \sigma) \\ 
+\mu_i &= \alpha + \beta_1 \cdot \text{end\_date}_i + \beta_2 \cdot \text{candidate\_name}_i + \beta_3 \cdot \text{sample\_size}_i + \sum_{j=1}^{M} \gamma_j \cdot \text{state}_j \\ 
+\alpha &\sim \text{Normal}(50, 10) \\ 
+\beta_1, \beta_2, \beta_3 &\sim \text{Normal}(0, 2.5) \\ 
+\gamma_j &\sim \text{Normal}(0, 2.5) \\ 
+\sigma &\sim \text{Exponential}(1)
 \end{align}
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+In this setup, the intercept $\alpha$ represents the baseline poll result, while each $\beta$ coefficient captures the specific influence of its associated predictor on the vote percentage. The variable $\text{state}_j$ accounts for effects attributed to different states, while $\text{end\_date}_{i}$ models temporal trends.
+
+Priors are defined as follows: $alpha$ follows a normal distribution with a mean of 50 and a standard deviation of 10. Each of the $\beta$ and $\gamma$ parameters has a normal prior centered at 0 with a standard deviation of 2.5, indicating a mild assumption about their potential effects without introducing bias. The noise parameter $\sigma$ adheres to an exponential distribution, facilitating flexibility in the unexplained variation.
+
+We run the model using the @citeR package of @rstanarm, focusing on how the vote percentage varies based on the predictors.
+
+The complete model, summarizing the components, can be expressed as:
+
+$$y_i \sim \text{Normal}\left(\beta_0 + \beta_1 \cdot \text{end\_date}_i + \sum_{k=1}^{K} \gamma_k B_k(\text{state}_j), \sigma^2\right)$$
+
+In this expression, $y_i$ represents the predicted vote percentage for observation $i$, modeled as a function of the predictors, where the mean $\mu_i$ captures the expected percentage, and $\sigma$ reflects the variability.
+
+To further clarify the model:
+
+- **Formula (1)** shows that the response variable $y_i$ is normally distributed, with $\mu_i$ as the expected value and $\sigma$ representing standard deviation.
+- **Formula (2)** illustrates that $\mu_i$ is derived from the intercept $\alpha$ and the predictors.
+- **Formula (3)** details the basis functions applied to the state variable, allowing for a nuanced relationship between states and vote percentages.
+The prior distributions are:
+- **Formula (4)** specifies that $\alpha$ has a normal distribution with mean 50 and variance $10^2$, indicating our expectation of average vote percentage.
+- **Formula (5)** outlines the priors for $\gamma_k$, which are normal distributions centered at 0 with variance $2.5^2$, reflecting the belief in potentially small effects from state variables.
+- **Formula (6)** assigns an exponential distribution to the standard deviation $\sigma$, suggesting that smaller variance is more likely while allowing for broader variations.
+
+
+## Bayesian Priors
+
+For Bayesian inference, we apply the following prior distributions:
+
+- **Intercept prior**: A `Normal(50, 10)` prior is used for the intercept, reflecting a moderately informative belief that baseline support percentage falls within the plausible range (centered around 50% with a moderate spread).
+- **Coefficients prior**: A `Normal(0, 2.5)` prior is assigned to each regression coefficient, which is weakly informative and allows flexibility without over-restricting the influence of predictors.
+
+These priors are selected to strike a balance between allowing the data to inform estimates while providing regularization to prevent extreme parameter values. The priors are justified based on general expectations of support ranges and aim to avoid overfitting.
+
+## Assumptions and Limitations
+
+1. **Linearity**: The model assumes a linear relationship between independent variables (predictors) and the dependent variable (outcome, `pct`). The expected outcome is represented as a linear combination of the predictors. Nonlinear effects, if present, may not be fully captured, potentially affecting the model's fit.
+
+2. **Normality of Errors**: It is assumed that the residuals (the differences between observed and predicted values) follow a normal distribution. This assumption is crucial for making valid inferences; violations can lead to incorrect conclusions and unreliable credible intervals.
+
+3. **Homoscedasticity**: The variance of the residuals is expected to be constant across all combinations of the predictors. If residuals display heteroscedasticity (non-constant variance), it can result in inefficient estimates and biased interpretations of the modeled relationships.
+
+4. **Independence of Errors**: The model assumes that errors are independent of one another, meaning the error term for any single observation does not affect the error term for another observation. However, polling data often includes repeated measures from the same pollster, which may introduce dependence among observations.
+
+5. **Additivity**: Predictors are assumed to additively influence `pct`, meaning interactions or non-additive effects are not considered. Future versions of the model might benefit from testing interactions, such as between state and candidate.
+
+6. **Prior Distributions**: Bayesian regression requires the specification of prior distributions for the model parameters (coefficients). The selection of these priors is significant, as they can impact the resulting posterior distributions, particularly when data is limited.
+
+7. **Parameter Estimation**: In Bayesian linear regression, parameters are estimated using a posterior distribution derived from both the likelihood of the observed data and the prior distributions. This framework allows for uncertainty quantification and more flexible inference.
+
+8. **Error Distribution**: The model presumes normally distributed residuals. Any deviation from this assumption may influence the validity of the inference. Diagnostic checks and posterior predictive checks are used to assess model fit and adherence to assumptions.
+
+
+## Software and Validation
+
+The model is implemented using the `rstanarm` package in R, which allows for efficient Bayesian inference with automatic convergence diagnostics. Model fit and convergence were monitored through trace plots and effective sample sizes. To further ensure robustness, we performed posterior predictive checks using `pp_check(model_bayes)` to evaluate model fit and identify any systematic deviations.
+
+Overall, this Bayesian model provides a balanced approach, capturing key effects while maintaining interpretability and flexibility, making it suitable for predicting candidate support percentages in the election context.
 
 
 ### Model justification
@@ -260,47 +341,12 @@ In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. 
 
 In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
 
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
 
 ## Diagnostics
 
 @fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
 
 @fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
 
 
 
