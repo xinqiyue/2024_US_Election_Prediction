@@ -11,10 +11,12 @@
 library(tidyverse)
 library(dplyr)
 library(tidyr)
+library(arrow)
+
 #### Clean data ####
 president_polls_raw_data <- read.csv('data/01-raw_data/president_polls.csv')
 
-# 过滤出高质量民调（numeric_grade >= 2.5）的民调
+# filter out high quality polls（numeric_grade >= 2.5)
 president_polls_filtered <- president_polls_raw_data %>% 
   janitor::clean_names() %>%
   select(# pollscore, methodology, transparency_score, start_date, population, population_full, hypothetical, answer, pollster,
@@ -46,4 +48,4 @@ president_polls_cleaned_data <- president_polls_filtered %>%
     pct)
 
 #### Save data ####
-write_csv(president_polls_cleaned_data, 'data/02-analysis_data/president_polls_cleaned_data.csv')
+write_parquet(president_polls_cleaned_data, "data/02-analysis_data/president_polls_cleaned_data.parquet")

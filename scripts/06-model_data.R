@@ -1,13 +1,3 @@
-#### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
-
-
 #### Workspace setup ####
 library(tidyverse)
 library(janitor)
@@ -16,173 +6,110 @@ library(broom)
 library(modelsummary)
 library(rstanarm)
 library(splines)
+library(caret)
 
 #### Read data ####
-analysis_data <- read_csv("data/analysis_data/analysis_data.csv")
+president_polls_cleaned_data <- read_parquet("data/02-analysis_data/president_polls_cleaned_data.parquet")
 
-### Model data ####
-#### 准备数据集 ####
-# 读取数据并清理变量名称
-president_polls_data <- read.csv('data/02-analysis_data/president_polls_cleaned_data.csv')
+#### Construct Model ####
+# Change 'state','candidate_name' to factor variables
 
-#### 初步模型 ####
-# 模型 1：pct 作为 end_date 的函数
-model_date <- lm(pct ~ end_date, data = president_polls_cleaned_data)
+# Set seed for reproducibility
+set.seed(666)
 
-# 模型 2：pct 作为 end_date 和候选人的函数
-model_date_candidates <- lm(pct ~ end_date + candidate_name,
-                            #+ transparency_score + sample_size + numeric_grade + pollscore + num_candidates, 
-                            data = president_polls_cleaned_data)
+# Create a train/test split (80% training, 20% testing)
+train_index <- createDataPartition(president_polls_cleaned_data$pct, 
+                                   p = 0.8, 
+                                   list = FALSE)
 
-# 将模型预测添加到数据中
-president_polls_cleaned_data <- president_polls_cleaned_data |> 
+train_data <- president_polls_cleaned_data[train_index, ]
+test_data <- president_polls_cleaned_data[-train_index, ]
+
+# Change 'state', 'candidate_name' to factor variables in train_data
+train_data <- train_data |> 
   mutate(
-    fitted_date = predict(model_date),
-    fitted_date_candidates = predict(model_date_candidates)
+    state = factor(state),
+    candidate_name = factor(candidate_name)
   )
 
-# 绘制模型预测
-# 模型 1
-ggplot(president_polls_cleaned_data, aes(x = end_date)) +
-  geom_point(aes(y = pct), color = "black") +
-  geom_line(aes(y = fitted_date), color = "blue", linetype = "dotted") +
-  theme_classic() +
-  labs(y = "Candidate Support (%)", x = "Date", title = "Linear Model: pct ~ end_date")
-
-# 模型 2
-ggplot(president_polls_cleaned_data, aes(x = end_date)) +
-  geom_point(aes(y = pct, color = candidate_name)) +
-  geom_line(aes(y = fitted_date_candidates), color = "blue", linetype = "dotted") +
-  facet_wrap(vars(candidate_name)) +
-  theme_classic() +
-  labs(y = "Candidate Support (%)", x = "Date", title = "Linear Model: pct ~ end_date + candidate_name")
-
-#### 贝叶斯模型 ####
-# 将 'candidate_name' 和 'state' 转换为因子变量
-president_polls_cleaned_data <- president_polls_cleaned_data |> 
-  mutate(
-    candidate_name = factor(candidate_name),
-    state = factor(state)
-  )
-
-# 模型 1
-model_formula_1 <- cbind(num_candidates, sample_size - num_candidates) ~ (1 | candidate_name)
-
-# 指定先验
-priors <- normal(0, 2.5, autoscale = TRUE)
-
-# 拟合模型
-bayesian_model_1 <- stan_glmer(
-  formula = model_formula_1,
-  data = president_polls_cleaned_data,
-  family = binomial(link = "logit"),
-  prior = priors,
-  prior_intercept = priors,
-  seed = 123,
-  cores = 4,
-  adapt_delta = 0.95 
-)
-
-# 总结模型
-summary(bayesian_model_1)
-
-# 绘制随机效应
-plot(bayesian_model_1, pars = "(Intercept)", prob = 0.95)
-
-#### 贝叶斯模型与样条 ####
-# 将日期转换为自声明的天数
-president_polls_cleaned_data <- president_polls_cleaned_data |> 
-  mutate(
-    end_date_num = as.numeric(end_date - min(end_date))
-  )
-
-# 拟合贝叶斯模型
-spline_model <- stan_glm(
-  pct ~ ns(end_date_num, df = 5) + candidate_name,
+# Fit the Bayesian regression model
+model_bayes <- stan_glm(
+  pct ~ end_date + candidate_name + sample_size + state,
   data = president_polls_cleaned_data,
   family = gaussian(),
-  prior = normal(0, 5),
   prior_intercept = normal(50, 10),
-  seed = 1234,
+  prior = normal(0, 2.5),
+  chains = 4,
+  seed = 666,
   iter = 2000,
   chains = 4,
   refresh = 0
 )
 
-# 总结模型
-summary(spline_model)
-
-# 创建用于预测的新数据
-new_data <- data.frame(
-  end_date_num = seq(
-    min(president_polls_cleaned_data$end_date_num),
-    max(president_polls_cleaned_data$end_date_num),
-    length.out = 100
-  ),
-  candidate_name = factor("Candidate A", levels = levels(president_polls_cleaned_data$candidate_name))
-)
-
-# 预测后验
-posterior_preds <- posterior_predict(spline_model, newdata = new_data)
-
-# 总结预测
-pred_summary <- new_data |> 
+# Change 'state', 'candidate_name' to factor variables in test_data
+test_data <- test_data |> 
   mutate(
-    pred_mean = colMeans(posterior_preds),
-    pred_lower = apply(posterior_preds, 2, quantile, probs = 0.025),
-    pred_upper = apply(posterior_preds, 2, quantile, probs = 0.975)
+    state = factor(state),
+    candidate_name = factor(candidate_name)
   )
 
-# 绘制样条拟合
-ggplot(president_polls_cleaned_data, aes(x = end_date_num, y = pct, color = candidate_name)) +
-  geom_point() +
-  geom_line(data = pred_summary, aes(x = end_date_num, y = pred_mean), color = "blue", inherit.aes = FALSE) +
-  geom_ribbon(data = pred_summary, aes(x = end_date_num, ymin = pred_lower, ymax = pred_upper), alpha = 0.2, inherit.aes = FALSE) +
-  labs(
-    x = "Days since earliest poll",
-    y = "Percentage",
-    title = "Poll Percentage over Time with Spline Fit"
-  ) +
-  theme_minimal()
+# Make predictions on the test dataset
+predictions <- posterior_predict(model_bayes, newdata = test_data)
 
+# Calculate mean predictions
+mean_predictions <- colMeans(predictions)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-first_model <-
-  stan_glm(
-    formula = flying_time ~ length + width,
-    data = analysis_data,
-    family = gaussian(),
-    prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
-    prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
-    prior_aux = exponential(rate = 1, autoscale = TRUE),
-    seed = 853
-  )
-
-
-#### Save model ####
-saveRDS(
-  first_model,
-  file = "models/first_model.rds"
+# Create a dataframe for comparison
+results <- data.frame(
+  actual = test_data$pct,
+  predicted = mean_predictions
 )
 
+# Calculate RMSE
+rmse <- sqrt(mean((results$actual - results$predicted) ^ 2))
+r_squared <- 1 - (sum((results$actual - results$predicted) ^ 2) / 
+                    sum((results$actual - mean(results$actual)) ^ 2))
+
+# Display RMSE and R²
+print(paste("RMSE:", rmse))
+print(paste("R-squared:", r_squared))
+
+# Example new data for prediction
+new_data <- expand.grid(
+  end_date = as.Date("2024-11-08"),  # Date of the election
+  candidate_name = factor(c("Kamala Harris", "Donald Trump")),  # Candidates
+  sample_size = c(1000),  # Sample size can be the same for both candidates
+  state = factor(c("National", "Arizona", "California", "Georgia", "North Carolina", 
+                   "Washington", "Pennsylvania", "New Hampshire", "Texas", "Michigan", 
+                   "Nevada", "Wisconsin", "Montana", "Florida", "Ohio", "Massachusetts", "Virginia", 
+                   "South Carolina", "Nebraska CD-2", "Minnesota", "New York", "Nebraska", "Maryland", 
+                   "New Mexico", "Connecticut", "Rhode Island", "Missouri", "Indiana", "Iowa", "Vermont",
+                   "Maine", "Maine CD-1", "Maine CD-2"))  # Actual states
+)
+
+# Make sure the sample size is repeated for each candidate-state combination
+new_data$sample_size <- rep(c(1000, 1000), times = length(unique(new_data$state)))
+
+# Make predictions for the new data
+predictions_new <- posterior_predict(model_bayes, newdata = new_data)
+
+# Calculate mean predictions for new data
+mean_predictions_new <- colMeans(predictions_new)
+
+# 创建一个数据框，包含州、候选人名称和对应的平均预测值
+state_names <- levels(new_data$state)
+
+# 准备结果数据框
+prediction_results <- data.frame(
+  state = rep(state_names, each = 2),  # 每个州两次，分别对应两个候选人
+  candidate_name = rep(levels(new_data$candidate_name), times = length(state_names)),
+  predicted_pct = c(mean_predictions_new[1:length(state_names)], mean_predictions_new[(length(state_names)+1):(2*length(state_names))])
+)
+
+summary(model_bayes)
+pp_check(model_bayes)
+
+
+# Save model for future use
+saveRDS(model_bayes, "models/election_glm_model.rds")
 
