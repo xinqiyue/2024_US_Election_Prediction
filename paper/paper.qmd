@@ -1,6 +1,6 @@
 ---
-title: "Prediction of US Election in 2024"
-subtitle: "My subtitle if needed"
+title: "Forecasting the 2024 US Presidential Election"
+subtitle: "A Poll-of-Polls Approach Using Generalized Linear Modeling"
 author: 
   - Xinqi Yue
   - Yawen Tan
@@ -8,7 +8,7 @@ author:
 thanks: "Code and data are available at: [https://github.com/xinqiyue/2024_US_Election_Prediction](https://github.com/xinqiyue/2024_US_Election_Prediction)."
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper builds a predictive model to forecast the 2024 US presidential election using a “poll-of-polls” approach, analyzing high-quality polls for Kamala Harris and Donald Trump. The model incorporates data on polling methodology, state trends, and candidate support. Our findings indicate that xxxxxxxx. This study contributes to a deeper understanding of electoral forecasting, helping us interpret aggregated polling data to anticipate election results accurately."
 format: pdf
 number-sections: true
 bibliography: references.bib

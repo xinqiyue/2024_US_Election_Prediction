@@ -1,101 +1,101 @@
-"","pollster","numeric_grade","pollscore","transparency_score","state","start_date","end_date","sample_size","population","population_full","hypothetical","party","answer","candidate_name","pct"
-"1","U. New Hampshire",3,-0.428870130773749,5.72777516348287,"Arizona",2024-10-11,2024-10-24,7273,"rv","Registered Voters",1,"DEM","Kamala Harris","Kamala Harris",42.9
-"2","University of Massachusetts Lowell/YouGov",3,-0.87055004761714,8.1526732291095,"Arizona",2024-10-03,2024-10-21,1192,"lv","Likely Voters",1,"DEM","Kamala Harris","Kamala Harris",47.4
-"3","University of Maryland/Washington Post",3,-1.24877705568202,9.40890432428569,"Iowa",2024-10-11,2024-10-31,1955,"lv","Registered Voters",0,"DEM","Donald Trump","Kamala Harris",56.8
-"4","The Washington Post",2,-0.813948767574672,4.7426570658572,"Montana",2024-10-01,2024-10-21,3691,"rv","Likely Voters",1,"REP","Kamala Harris","Donald Trump",51.7
-"5","SurveyUSA",2,-1.5717460813299,6.13815621472895,"Pennsylvania",2024-10-07,2024-10-28,1688,"rv","Registered Voters",0,"REP","Kamala Harris","Kamala Harris",52.9
-"6","Roanoke College",2,-0.658519410318276,7.4377343703527,"Rhode Island",2024-10-13,2024-10-30,4837,"rv","Likely Voters",1,"DEM","Donald Trump","Kamala Harris",51.2
-"7","Marquette Law School",2,-0.613398437315024,5.4511994344648,"New Hampshire",2024-10-14,2024-10-29,6579,"rv","Registered Voters",0,"REP","Donald Trump","Donald Trump",35.8
-"8","Siena",3,-1.26262259859839,3.87411969318055,"New Mexico",2024-10-08,2024-10-16,1604,"lv","Likely Voters",1,"DEM","Donald Trump","Kamala Harris",34.5
-"9","Beacon/Shaw",2,-1.56085097440473,5.07336293067783,"Virginia",2024-10-02,2024-10-29,6007,"rv","Likely Voters",1,"DEM","Donald Trump","Donald Trump",59.5
-"10","PPIC",3,-1.2497571112833,9.29408871079795,"New Mexico",2024-10-11,2024-10-18,3151,"lv","Registered Voters",0,"DEM","Donald Trump","Donald Trump",37
-"11","Hart/POS",2,-0.82451553100749,6.34467354952358,"Massachusetts",2024-10-12,2024-10-21,1912,"lv","Registered Voters",1,"REP","Donald Trump","Donald Trump",37.6
-"12","University of Maryland/Washington Post",3,-1.09011161225657,7.6834679688327,"Ohio",2024-10-10,2024-10-28,2119,"lv","Registered Voters",1,"REP","Kamala Harris","Kamala Harris",59.7
-"13","Beacon/Shaw",2,-2.5743934090766,4.5558791863732,"Maine CD-2",2024-10-03,2024-10-18,5637,"lv","Registered Voters",1,"DEM","Kamala Harris","Donald Trump",58.6
-"14","Mason-Dixon",2,-1.67828792680827,4.42922230740078,"Vermont",2024-10-13,2024-10-30,5198,"lv","Likely Voters",1,"DEM","Kamala Harris","Donald Trump",33.7
-"15","East Carolina University",3,-0.482878118131123,8.01343670603819,"Arizona",2024-10-09,2024-10-24,7822,"rv","Registered Voters",0,"DEM","Kamala Harris","Donald Trump",37
-"16","Roanoke College",3,0.289462261504484,5.02034718147479,"Texas",2024-10-10,2024-10-17,710,"lv","Registered Voters",1,"REP","Donald Trump","Kamala Harris",47.4
-"17","Quinnipiac",2,-1.61001381877396,8.2099723550491,"Texas",2024-10-13,2024-10-27,6603,"rv","Registered Voters",1,"REP","Donald Trump","Kamala Harris",45.7
-"18","University of Massachusetts Lowell/YouGov",2,-0.703072403762487,1.47774600470439,"New York",2024-10-05,2024-10-30,3850,"rv","Likely Voters",1,"REP","Donald Trump","Donald Trump",50
-"19","Ipsos",3,-0.259986562012977,7.08345337817445,"Texas",2024-10-11,2024-10-16,828,"lv","Likely Voters",1,"REP","Kamala Harris","Kamala Harris",56.2
-"20","Siena/NYT",2,-0.702675914882385,1.99687370634638,"Missouri",2024-10-01,2024-10-28,2652,"lv","Registered Voters",0,"DEM","Donald Trump","Donald Trump",35.6
-"21","Ipsos",2,-1.50384351659471,6.03440611320548,"Nebraska",2024-10-03,2024-10-21,6677,"lv","Registered Voters",1,"REP","Kamala Harris","Kamala Harris",48.5
-"22","Elon U.",3,-0.674262141849839,6.21012706379406,"New York",2024-10-04,2024-10-31,7524,"rv","Likely Voters",0,"DEM","Kamala Harris","Kamala Harris",45.1
-"23","AtlasIntel",2,-0.243910158382862,1.48339261836372,"Nebraska",2024-10-08,2024-10-31,589,"lv","Likely Voters",0,"DEM","Donald Trump","Kamala Harris",36.5
-"24","YouGov/Center for Working Class Politics",2,-0.943757935613217,8.75094983214512,"National",2024-10-11,2024-10-29,4287,"rv","Likely Voters",1,"DEM","Donald Trump","Donald Trump",49
-"25","Suffolk",3,-0.922448679633235,5.93639840115793,"Indiana",2024-10-11,2024-10-26,456,"rv","Registered Voters",1,"REP","Donald Trump","Donald Trump",56.7
-"26","YouGov/Center for Working Class Politics",2,-1.73533978544965,2.72180590382777,"South Carolina",2024-10-14,2024-10-30,7876,"rv","Likely Voters",0,"REP","Kamala Harris","Kamala Harris",40.1
-"27","YouGov/Center for Working Class Politics",3,-1.93275121434816,2.13649321324192,"Virginia",2024-10-06,2024-10-21,4532,"lv","Registered Voters",0,"REP","Donald Trump","Donald Trump",38.3
-"28","McCourtney Institute/YouGov",3,-1.06490736945842,4.63691416266374,"Maine CD-1",2024-10-04,2024-10-24,6666,"rv","Registered Voters",0,"REP","Kamala Harris","Kamala Harris",50.1
-"29","U. New Hampshire",2,-0.993892327726341,3.05328489863314,"Nebraska CD-2",2024-10-05,2024-10-18,6375,"rv","Likely Voters",0,"REP","Donald Trump","Kamala Harris",36.3
-"30","YouGov Blue",2,-1.85394289674374,8.11896528606303,"Indiana",2024-10-13,2024-10-25,6165,"lv","Likely Voters",1,"REP","Donald Trump","Kamala Harris",30.8
-"31","SurveyUSA",3,-0.739443471885926,7.68084257026203,"Rhode Island",2024-10-14,2024-10-28,725,"rv","Likely Voters",0,"DEM","Kamala Harris","Kamala Harris",39.7
-"32","Beacon/Shaw",3,-0.525886392826557,3.3849784869235,"New York",2024-10-07,2024-10-20,4955,"rv","Likely Voters",1,"DEM","Donald Trump","Kamala Harris",41.7
-"33","East Carolina University",3,-0.262194938580058,1.44809036818333,"South Carolina",2024-10-13,2024-10-18,437,"lv","Registered Voters",1,"REP","Kamala Harris","Donald Trump",56.8
-"34","University of Maryland/Washington Post",3,-0.641370127371616,7.5458248895593,"Georgia",2024-10-10,2024-10-31,6706,"rv","Likely Voters",0,"DEM","Donald Trump","Kamala Harris",53.6
-"35","Muhlenberg",3,-1.48881330054462,2.24720934266225,"Nebraska CD-2",2024-10-11,2024-10-17,5138,"rv","Registered Voters",1,"REP","Donald Trump","Donald Trump",39.4
-"36","Roanoke College",3,-1.09807845932785,5.26455680746585,"Michigan",2024-10-02,2024-10-22,2904,"lv","Likely Voters",0,"REP","Kamala Harris","Donald Trump",59.3
-"37","MassINC Polling Group",2,-0.401939459518122,3.44368789321743,"Georgia",2024-10-10,2024-10-18,3800,"rv","Registered Voters",0,"REP","Kamala Harris","Kamala Harris",47.3
-"38","Data Orbital",2,-1.24751474322188,4.25133321830072,"Maryland",2024-10-10,2024-10-29,1819,"rv","Registered Voters",1,"REP","Kamala Harris","Kamala Harris",32.9
-"39","Pew",3,0.0958774433810301,4.54718083702028,"Michigan",2024-10-06,2024-10-28,1438,"lv","Likely Voters",0,"REP","Donald Trump","Kamala Harris",51.9
-"40","U. New Hampshire",2,-1.62023493384341,5.64780001388863,"Maryland",2024-10-14,2024-10-24,7079,"rv","Likely Voters",1,"REP","Kamala Harris","Kamala Harris",34.3
-"41","Elon U.",3,-0.687728470469179,6.17633704305626,"Missouri",2024-10-15,2024-10-16,1871,"rv","Registered Voters",0,"REP","Kamala Harris","Donald Trump",40.5
-"42","Marquette Law School",3,-1.74948784548764,9.22085360251367,"South Carolina",2024-10-04,2024-10-22,1343,"lv","Likely Voters",1,"REP","Kamala Harris","Donald Trump",42.5
-"43","Data for Progress",3,-0.327360239970967,7.4102913341485,"Ohio",2024-10-07,2024-10-31,7921,"rv","Registered Voters",0,"DEM","Kamala Harris","Kamala Harris",35.1
-"44","Siena/NYT",3,-0.662770809707316,3.53935922728851,"Iowa",2024-10-11,2024-10-22,2671,"lv","Likely Voters",1,"DEM","Donald Trump","Kamala Harris",37.8
-"45","Fairleigh Dickinson",2,-1.32891285292921,7.68782232981175,"National",2024-10-04,2024-10-29,4267,"lv","Registered Voters",0,"DEM","Kamala Harris","Donald Trump",48
-"46","Elon U.",3,-1.17439091750532,4.0305429440923,"New Mexico",2024-10-04,2024-10-29,7656,"lv","Registered Voters",0,"REP","Donald Trump","Donald Trump",58.7
-"47","Siena",3,-1.08271715500005,1.7782511850819,"Michigan",2024-10-04,2024-10-30,7171,"rv","Registered Voters",1,"DEM","Donald Trump","Kamala Harris",48.6
-"48","Siena/NYT",2,-0.336039834034449,2.23306442634203,"Iowa",2024-10-10,2024-10-30,7968,"rv","Registered Voters",0,"DEM","Kamala Harris","Kamala Harris",43.6
-"49","Ipsos",3,-1.11331200635402,8.49893276928924,"Ohio",2024-10-02,2024-10-24,5611,"rv","Registered Voters",1,"REP","Donald Trump","Kamala Harris",48.9
-"50","U. New Hampshire",3,-1.19763236943343,3.53226472367533,"Montana",2024-10-13,2024-10-18,5004,"rv","Likely Voters",1,"DEM","Kamala Harris","Kamala Harris",36.4
-"51","Winthrop U.",3,-1.33635341210077,3.8497580960393,"Wisconsin",2024-10-05,2024-10-27,4976,"rv","Registered Voters",1,"REP","Donald Trump","Donald Trump",49.9
-"52","Muhlenberg",3,-1.18346080459458,1.8415329195559,"Georgia",2024-10-15,2024-10-25,6175,"lv","Likely Voters",0,"REP","Kamala Harris","Donald Trump",55.2
-"53","Emerson",3,-2.39241226791,6.49442462949082,"Maine",2024-10-08,2024-10-21,7061,"lv","Registered Voters",1,"DEM","Kamala Harris","Donald Trump",49.5
-"54","University of Maryland/Washington Post",3,-0.233970107045138,5.37584664253518,"California",2024-10-03,2024-10-24,4725,"lv","Likely Voters",0,"DEM","Donald Trump","Donald Trump",36.5
-"55","U. New Hampshire",3,-0.898394226425541,5.45645295991562,"Michigan",2024-10-01,2024-10-21,6294,"rv","Registered Voters",1,"DEM","Kamala Harris","Donald Trump",57.8
-"56","Kaiser Family Foundation",2,-0.95715179563826,6.59303342876956,"New Hampshire",2024-10-02,2024-10-27,3190,"rv","Registered Voters",1,"REP","Donald Trump","Kamala Harris",31.6
-"57","Kaiser Family Foundation",3,-2.30961331402579,3.68290126160719,"Minnesota",2024-10-09,2024-10-30,6544,"lv","Likely Voters",0,"DEM","Kamala Harris","Donald Trump",32
-"58","YouGov Blue",3,-1.67999113074522,6.5999832523521,"Connecticut",2024-10-11,2024-10-22,7723,"lv","Registered Voters",0,"REP","Kamala Harris","Donald Trump",57.1
-"59","CNN/SSRS",3,-0.547994895238118,8.28505101474002,"Nebraska CD-2",2024-10-01,2024-10-16,6512,"lv","Registered Voters",1,"REP","Donald Trump","Donald Trump",41.5
-"60","YouGov/Center for Working Class Politics",2,-0.877252038029704,4.08711080765352,"Indiana",2024-10-15,2024-10-17,6426,"rv","Likely Voters",1,"REP","Kamala Harris","Kamala Harris",36.6
-"61","Selzer",3,-0.395133871944825,2.8941784077324,"Pennsylvania",2024-10-01,2024-10-17,779,"rv","Likely Voters",0,"REP","Kamala Harris","Donald Trump",31.2
-"62","YouGov/Center for Working Class Politics",2,-1.07448500682175,7.96164170559496,"Vermont",2024-10-13,2024-10-29,4849,"lv","Registered Voters",1,"DEM","Kamala Harris","Donald Trump",51.4
-"63","Marist",3,-0.858938478052633,9.601911961101,"Florida",2024-10-04,2024-10-22,6533,"lv","Registered Voters",1,"REP","Kamala Harris","Donald Trump",33.4
-"64","East Carolina University",2,-0.628966997307193,3.57777432352304,"Iowa",2024-10-07,2024-10-23,4775,"lv","Registered Voters",0,"DEM","Kamala Harris","Kamala Harris",41.4
-"65","Roanoke College",2,-1.25568081069408,1.71525470353663,"Texas",2024-10-05,2024-10-28,5267,"lv","Registered Voters",0,"DEM","Kamala Harris","Kamala Harris",41
-"66","SurveyUSA/High Point University",2,-0.52168612358268,6.94948146981187,"Virginia",2024-10-02,2024-10-24,3841,"lv","Registered Voters",1,"DEM","Kamala Harris","Kamala Harris",47.5
-"67","Data for Progress",3,-2.09025097464857,3.8063249848783,"Texas",2024-10-08,2024-10-27,1569,"lv","Likely Voters",0,"DEM","Kamala Harris","Kamala Harris",35.2
-"68","University of Massachusetts Lowell/YouGov",2,-1.97128838037915,6.67451065941714,"California",2024-10-10,2024-10-27,4959,"lv","Registered Voters",1,"REP","Kamala Harris","Kamala Harris",39.5
-"69","Christopher Newport U.",2,-0.593541211138835,6.44458364555612,"Texas",2024-10-07,2024-10-24,7621,"rv","Likely Voters",0,"DEM","Donald Trump","Donald Trump",54
-"70","U. New Hampshire",3,-0.512553770696241,8.89035647013225,"Michigan",2024-10-02,2024-10-25,6115,"rv","Likely Voters",1,"DEM","Kamala Harris","Kamala Harris",56.6
-"71","Roanoke College",3,-0.594382458907297,1.30800592340529,"Nebraska",2024-10-14,2024-10-30,7314,"lv","Registered Voters",1,"REP","Kamala Harris","Kamala Harris",46.7
-"72","Data Orbital",2,-1.39197502345476,7.94505816674791,"Maine",2024-10-14,2024-10-25,746,"rv","Registered Voters",1,"REP","Donald Trump","Donald Trump",31
-"73","Data Orbital",3,-1.54354103933994,9.43158002733253,"Missouri",2024-10-05,2024-10-19,7658,"rv","Registered Voters",0,"REP","Donald Trump","Donald Trump",52.3
-"74","Marquette Law School",2,-1.08314420625037,3.28799831867218,"New Hampshire",2024-10-15,2024-10-28,4247,"lv","Registered Voters",0,"REP","Kamala Harris","Kamala Harris",59.5
-"75","University of Maryland/Washington Post",3,-0.701563726229707,4.53853441774845,"Maine",2024-10-12,2024-10-21,2857,"rv","Registered Voters",1,"REP","Kamala Harris","Kamala Harris",59.1
-"76","Hart/POS",3,0.0105389939117837,4.67029143963009,"Florida",2024-10-05,2024-10-24,1172,"rv","Likely Voters",1,"DEM","Kamala Harris","Kamala Harris",56.4
-"77","Beacon/Shaw",3,-0.354053002367525,6.86767357308418,"Montana",2024-10-12,2024-10-16,2381,"lv","Likely Voters",1,"DEM","Kamala Harris","Kamala Harris",50.2
-"78","Data for Progress",3,-1.13038044142005,3.09556553163566,"Nebraska",2024-10-07,2024-10-19,749,"lv","Likely Voters",1,"DEM","Kamala Harris","Kamala Harris",50.7
-"79","PPIC",2,-0.330573902801743,3.1585306962952,"Washington",2024-10-09,2024-10-19,1756,"rv","Likely Voters",1,"REP","Donald Trump","Kamala Harris",54.1
-"80","YouGov/Center for Working Class Politics",3,-0.714067611206685,5.1705015420448,"New Mexico",2024-10-01,2024-10-29,2526,"rv","Likely Voters",1,"REP","Donald Trump","Donald Trump",50.1
-"81","Beacon/Shaw",2,-1.04247038074024,1.68182728183456,"Texas",2024-10-03,2024-10-28,1979,"rv","Registered Voters",0,"REP","Kamala Harris","Kamala Harris",32.1
-"82","Mason-Dixon",2,-0.00575201339370701,7.65106944041327,"Florida",2024-10-02,2024-10-16,1759,"lv","Likely Voters",1,"REP","Kamala Harris","Donald Trump",57.2
-"83","Selzer",3,-0.263366377413394,6.82936037355103,"National",2024-10-10,2024-10-27,7183,"rv","Likely Voters",0,"DEM","Kamala Harris","Kamala Harris",56.6
-"84","Elon U.",2,-0.38286394432008,5.48490065522492,"Minnesota",2024-10-02,2024-10-18,809,"lv","Likely Voters",1,"REP","Kamala Harris","Donald Trump",56.3
-"85","University of Massachusetts Lowell/YouGov",2,-0.891811920467607,8.59140022355132,"Washington",2024-10-06,2024-10-21,3504,"rv","Likely Voters",0,"DEM","Kamala Harris","Donald Trump",42.8
-"86","AtlasIntel",2,-0.855431133880346,4.82706285384484,"Pennsylvania",2024-10-13,2024-10-22,7572,"rv","Registered Voters",1,"REP","Donald Trump","Kamala Harris",32.2
-"87","Christopher Newport U.",3,-0.725523397785543,3.33304498181678,"Maine CD-2",2024-10-15,2024-10-20,4159,"lv","Registered Voters",0,"REP","Kamala Harris","Donald Trump",31.2
-"88","McCourtney Institute/YouGov",2,-0.746698951931599,8.62518441048451,"Florida",2024-10-11,2024-10-16,3391,"rv","Likely Voters",0,"DEM","Donald Trump","Kamala Harris",43.9
-"89","SurveyUSA",2,-1.29049588936883,3.92560627730563,"Nebraska CD-2",2024-10-12,2024-10-21,2165,"lv","Likely Voters",1,"REP","Kamala Harris","Kamala Harris",57.5
-"90","East Carolina University",3,-1.37729057106793,1.65376574289985,"Arizona",2024-10-07,2024-10-19,3873,"rv","Registered Voters",0,"DEM","Donald Trump","Donald Trump",32.3
-"91","AtlasIntel",2,-0.634389147365334,4.72162356832996,"Wisconsin",2024-10-04,2024-10-22,1569,"rv","Likely Voters",0,"DEM","Donald Trump","Donald Trump",39.6
-"92","Roanoke College",3,-1.12987452511163,3.64926034444943,"Indiana",2024-10-15,2024-10-24,3300,"rv","Registered Voters",1,"DEM","Donald Trump","Donald Trump",53.7
-"93","Washington Post/George Mason University",2,-0.639284778716284,1.07396873645484,"Nebraska CD-2",2024-10-08,2024-10-22,1226,"lv","Registered Voters",1,"DEM","Donald Trump","Kamala Harris",48.2
-"94","SurveyUSA",2,-1.33494319529948,2.52533437218517,"Arizona",2024-10-11,2024-10-23,6846,"rv","Likely Voters",0,"DEM","Kamala Harris","Kamala Harris",45.9
-"95","Emerson",3,-1.3222031057772,1.99188150139526,"Rhode Island",2024-10-15,2024-10-19,3969,"rv","Registered Voters",1,"DEM","Donald Trump","Kamala Harris",51.5
-"96","Echelon Insights",3,-1.62713207436247,4.21435728855431,"New Hampshire",2024-10-06,2024-10-25,7258,"rv","Registered Voters",0,"DEM","Kamala Harris","Donald Trump",35.4
-"97","Muhlenberg",3,-0.891079569155132,5.3122436569538,"Arizona",2024-10-01,2024-10-17,3704,"rv","Likely Voters",1,"DEM","Kamala Harris","Donald Trump",34
-"98","Data Orbital",3,-0.474587030501299,6.66023147548549,"National",2024-10-10,2024-10-24,1749,"lv","Likely Voters",0,"REP","Kamala Harris","Kamala Harris",54.1
-"99","Echelon Insights",2,-1.76491614390781,1.26272353599779,"Iowa",2024-10-05,2024-10-26,7316,"rv","Likely Voters",1,"REP","Donald Trump","Donald Trump",59.3
-"100","Christopher Newport U.",3,-0.472371995554016,3.85775680583902,"New Hampshire",2024-10-02,2024-10-25,3164,"lv","Registered Voters",0,"REP","Donald Trump","Donald Trump",39.8
+"","state","end_date","sample_size","candidate_name","pct"
+"1","Maine CD-1",2024-10-19,3334,"Kamala Harris",48.6
+"2","Nevada",2024-10-28,6219,"Donald Trump",38.9
+"3","Indiana",2024-10-19,4438,"Kamala Harris",48.7
+"4","Florida",2024-10-21,5827,"Kamala Harris",54.3
+"5","North Carolina",2024-10-21,5032,"Kamala Harris",40.3
+"6","Wisconsin",2024-10-31,2435,"Donald Trump",36.3
+"7","Maine CD-2",2024-10-29,6167,"Kamala Harris",53.2
+"8","California",2024-10-31,5207,"Donald Trump",58.7
+"9","Montana",2024-10-25,719,"Donald Trump",38.6
+"10","Indiana",2024-10-24,2231,"Kamala Harris",32.4
+"11","California",2024-10-31,3272,"Donald Trump",49.8
+"12","Virginia",2024-10-25,1600,"Kamala Harris",39.4
+"13","Washington",2024-10-19,5240,"Kamala Harris",48.9
+"14","Georgia",2024-10-24,4158,"Donald Trump",48.1
+"15","Nevada",2024-10-31,5544,"Donald Trump",56.3
+"16","New Hampshire",2024-10-28,6370,"Donald Trump",31
+"17","Michigan",2024-10-25,4002,"Kamala Harris",53.2
+"18","New Hampshire",2024-10-16,7631,"Donald Trump",58.1
+"19","Missouri",2024-10-30,1277,"Kamala Harris",37.6
+"20","Minnesota",2024-10-24,6800,"Donald Trump",41.8
+"21","Massachusetts",2024-10-19,2964,"Donald Trump",42.2
+"22","Minnesota",2024-10-30,3496,"Kamala Harris",49.6
+"23","Minnesota",2024-10-28,1076,"Kamala Harris",37
+"24","New Mexico",2024-10-29,1001,"Donald Trump",37.2
+"25","Maine CD-1",2024-10-31,4717,"Kamala Harris",43.9
+"26","North Carolina",2024-10-28,4351,"Kamala Harris",32.3
+"27","California",2024-10-27,3061,"Donald Trump",52.2
+"28","Washington",2024-10-30,7661,"Kamala Harris",49.4
+"29","Indiana",2024-10-25,7502,"Kamala Harris",44.9
+"30","Vermont",2024-10-27,7438,"Donald Trump",55.3
+"31","Maine",2024-10-23,1775,"Kamala Harris",42.8
+"32","Ohio",2024-10-29,7534,"Kamala Harris",37.8
+"33","Maine CD-1",2024-10-18,1328,"Donald Trump",55.4
+"34","Wisconsin",2024-10-29,4786,"Kamala Harris",39.8
+"35","Nebraska CD-2",2024-10-18,6051,"Kamala Harris",32.2
+"36","Michigan",2024-10-30,2741,"Kamala Harris",42.4
+"37","Pennsylvania",2024-10-19,2546,"Kamala Harris",38.8
+"38","Maine CD-2",2024-10-28,748,"Kamala Harris",30.2
+"39","Michigan",2024-10-28,3652,"Kamala Harris",35.1
+"40","New Hampshire",2024-10-26,7846,"Donald Trump",33.3
+"41","Maine CD-1",2024-10-29,4286,"Kamala Harris",40.7
+"42","Nebraska",2024-10-18,5024,"Kamala Harris",44.4
+"43","Vermont",2024-10-26,2555,"Donald Trump",48.9
+"44","National",2024-10-25,2008,"Kamala Harris",30.9
+"45","Indiana",2024-10-20,2717,"Kamala Harris",39.5
+"46","Maine CD-1",2024-10-21,1132,"Kamala Harris",39.2
+"47","Rhode Island",2024-10-28,6712,"Kamala Harris",50.7
+"48","Minnesota",2024-10-16,4054,"Donald Trump",46.6
+"49","Minnesota",2024-10-29,437,"Donald Trump",53.3
+"50","Texas",2024-10-27,6859,"Kamala Harris",52.9
+"51","Washington",2024-10-31,7401,"Kamala Harris",42.8
+"52","Nebraska CD-2",2024-10-25,1230,"Kamala Harris",59
+"53","Nevada",2024-10-24,575,"Kamala Harris",58.1
+"54","South Carolina",2024-10-29,2202,"Donald Trump",43.1
+"55","Maine CD-1",2024-10-18,4479,"Donald Trump",41
+"56","Wisconsin",2024-10-23,2286,"Kamala Harris",58
+"57","Indiana",2024-10-22,5676,"Donald Trump",32.8
+"58","Montana",2024-10-16,5018,"Donald Trump",35.3
+"59","California",2024-10-20,2637,"Kamala Harris",49
+"60","Nebraska CD-2",2024-10-17,6580,"Kamala Harris",42.8
+"61","Minnesota",2024-10-20,688,"Donald Trump",37.4
+"62","California",2024-10-27,7897,"Donald Trump",50.4
+"63","Virginia",2024-10-28,6096,"Kamala Harris",58.5
+"64","Nevada",2024-10-20,4097,"Kamala Harris",30.2
+"65","Missouri",2024-10-31,4791,"Donald Trump",49.7
+"66","South Carolina",2024-10-27,4336,"Donald Trump",44
+"67","New Mexico",2024-10-17,6754,"Kamala Harris",55.9
+"68","North Carolina",2024-10-30,1976,"Donald Trump",35.7
+"69","Washington",2024-10-25,1173,"Kamala Harris",56.5
+"70","Missouri",2024-10-27,545,"Donald Trump",33.5
+"71","North Carolina",2024-10-24,4711,"Donald Trump",56.5
+"72","National",2024-10-18,1413,"Donald Trump",55.3
+"73","Connecticut",2024-10-23,7679,"Donald Trump",46.4
+"74","Vermont",2024-10-30,7307,"Donald Trump",40.1
+"75","Connecticut",2024-10-31,1774,"Kamala Harris",48.4
+"76","South Carolina",2024-10-20,626,"Kamala Harris",39.1
+"77","Washington",2024-10-17,3974,"Kamala Harris",59.9
+"78","Michigan",2024-10-21,3857,"Kamala Harris",37.3
+"79","Iowa",2024-10-21,5683,"Donald Trump",44.8
+"80","Maine",2024-10-22,7358,"Donald Trump",33
+"81","California",2024-10-19,1357,"Donald Trump",46.5
+"82","Montana",2024-10-31,3836,"Kamala Harris",31.9
+"83","Texas",2024-10-24,2106,"Donald Trump",33.3
+"84","Maine",2024-10-31,3143,"Donald Trump",38
+"85","Florida",2024-10-27,2796,"Kamala Harris",49.8
+"86","Arizona",2024-10-19,5983,"Kamala Harris",33
+"87","North Carolina",2024-10-25,670,"Kamala Harris",57.5
+"88","New Hampshire",2024-10-18,3112,"Kamala Harris",44.8
+"89","Nevada",2024-10-20,6398,"Donald Trump",42.3
+"90","New York",2024-10-24,4645,"Donald Trump",57.1
+"91","Wisconsin",2024-10-25,1284,"Donald Trump",48.9
+"92","Minnesota",2024-10-30,954,"Donald Trump",31.5
+"93","California",2024-10-21,4264,"Kamala Harris",41.8
+"94","Michigan",2024-10-21,3445,"Donald Trump",37.8
+"95","Maine CD-1",2024-10-20,6934,"Donald Trump",39.9
+"96","South Carolina",2024-10-25,6037,"Donald Trump",50
+"97","Maine",2024-10-29,7174,"Donald Trump",48.8
+"98","Maine CD-2",2024-10-16,2156,"Donald Trump",45.2
+"99","Nebraska",2024-10-28,5346,"Donald Trump",38.5
+"100","Vermont",2024-10-30,1850,"Kamala Harris",40.9

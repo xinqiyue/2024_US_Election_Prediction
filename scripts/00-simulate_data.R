@@ -17,7 +17,7 @@ set.seed(666)
 #### Simulate data ####
 num_rows <- 100  # Number of simulated rows
 
-president_polls <- data.frame(
+simulated_president_polls <- data.frame(
   # pollster = sample(c("Emerson", "YouGov", "Beacon/Shaw", "Quinnipiac", "SurveyUSA", "East Carolina University", "Fairleigh Dickinson", "Ipsos", "Marist", "Siena/NYT", "University of Massachusetts Lowell/YouGov", "Marquette Law School", "Hart/POS", "The Washington Post", "Pew", "Suffolk", "Mason-Dixon",
                       #"Christopher Newport U.", "Data for Progress", "YouGov/Center for Working Class Politics", "UC Berkeley", "Winthrop U.", "High Point University", "McCourtney Institute/YouGov", "Echelon Insights", "CNN/SSRS", "AtlasIntel", "University of Maryland/Washington Post", "Remington", "Muhlenberg", 
                       #"MassINC Polling Group", "U. New Hampshire",  "Siena", "Elon U.", "Selzer", "Data Orbital", "PPIC", "Washington Post/George Mason University", "Kaiser Family Foundation", "SurveyUSA/High Point University", "Roanoke College", "YouGov Blue", "U. North Florida"), num_rows, replace = TRUE),
@@ -43,11 +43,11 @@ president_polls <- data.frame(
                    "Maine", "Maine CD-1", "Maine CD-2"), num_rows, replace = TRUE),  # Random states, including blank for nationwide
   end_date = sample(seq(as.Date("2024-10-16"), as.Date("2024-10-31"), by="day"), num_rows, replace = TRUE),  # Random end dates
   sample_size = sample(400:8000, num_rows, replace = TRUE),  # Random sample sizes between 500 and 3000
-  answer = sample(c("Kamala Harris", "Donald Trump"), num_rows, replace = TRUE),  # Random answers
+  # answer = sample(c("Kamala Harris", "Donald Trump"), num_rows, replace = TRUE),  # Random answers
   candidate_name = sample(c("Kamala Harris", "Donald Trump"), num_rows, replace = TRUE),  # Random candidate names
   pct = round(runif(num_rows, min = 30, max = 60), 1)  # Random percentages between 30 and 60
   #, num_candidates = round((pct / 100) * sample_size, 0)
 )
 
 #### Save data ####
-write.csv(president_polls, "data/00-simulated_data/simulated_president_polls.csv")
+write.csv(simulated_president_polls, "data/00-simulated_data/simulated_president_polls.csv")

@@ -1,20 +1,20 @@
 #### Preamble ####
 # Purpose: Tests the structure and validity of the simulated Australian 
-  #electoral divisions dataset.
+#electoral divisions dataset.
 # Author: Rohan Alexander
 # Date: 26 September 2024
 # Contact: rohan.alexander@utoronto.ca
 # License: MIT
 # Pre-requisites: 
-  # - The `tidyverse` package must be installed and loaded
-  # - 00-simulate_data.R must have been run
+# - The `tidyverse` package must be installed and loaded
+# - 00-simulate_data.R must have been run
 # Any other information needed? Make sure you are in the `starter_folder` rproj
 
 
 #### Workspace setup ####
 library(tidyverse)
 
-analysis_data <- read_csv("data/00-simulated_data/simulated_data.csv")
+analysis_data <- read_csv("data/00-simulated_data/simulated_president_polls.csv")
 
 # Test if the data was successfully loaded
 if (exists("analysis_data")) {
@@ -33,19 +33,13 @@ if (nrow(analysis_data) == 100) {
   stop("Test Failed: The dataset does not have 100 rows.")
 }
 
-# Check if the dataset has 3 columns
-if (ncol(analysis_data) == 3) {
-  message("Test Passed: The dataset has 3 columns.")
+# Check if the dataset has 6 columns
+if (ncol(analysis_data) == 6) {
+  message("Test Passed: The dataset has 6 columns.")
 } else {
-  stop("Test Failed: The dataset does not have 3 columns.")
+  stop("Test Failed: The dataset does not have 6 columns.")
 }
 
-# Check if all values in the 'division' column are unique
-if (n_distinct(analysis_data$division) == nrow(analysis_data)) {
-  message("Test Passed: All values in 'division' are unique.")
-} else {
-  stop("Test Failed: The 'division' column contains duplicate values.")
-}
 
 # Check if the 'state' column contains only valid Australian state names
 valid_states <- c("National", "Arizona", "California", "Georgia", "North Carolina", 
@@ -61,32 +55,47 @@ if (all(analysis_data$state %in% valid_states)) {
   stop("Test Failed: The 'state' column contains invalid state names.")
 }
 
-# Check if the 'party' column contains only valid party names
-valid_parties <- c("DEM", "REP")
 
-if (all(analysis_data$party %in% valid_parties)) {
-  message("Test Passed: The 'party' column contains only valid party names.")
-} else {
-  stop("Test Failed: The 'party' column contains invalid party names.")
-}
-
-# Check if there are any missing values in the dataset
+# Check if there are any missing value
 if (all(!is.na(analysis_data))) {
   message("Test Passed: The dataset contains no missing values.")
 } else {
   stop("Test Failed: The dataset contains missing values.")
 }
 
-# Check if there are no empty strings in 'division', 'state', and 'party' columns
-if (all(analysis_data$division != "" & analysis_data$state != "" & analysis_data$party != "")) {
-  message("Test Passed: There are no empty strings in 'division', 'state', or 'party'.")
+# Check if there are no empty strings in 'state'
+if (all(analysis_data$state != "")) {
+  message("Test Passed: There are no empty strings in 'state'.")
 } else {
   stop("Test Failed: There are empty strings in one or more columns.")
 }
 
-# Check if the 'party' column has at least two unique values
-if (n_distinct(analysis_data$party) >= 2) {
-  message("Test Passed: The 'party' column contains at least two unique values.")
+# Check if end time are between 2024-10-16 and 2024-10-31
+date_range_start <- as.Date('2024-10-16')
+date_range_end <- as.Date('2024-10-31')
+dataset <- read_csv("data/00-simulated_data/simulated_president_polls.csv")
+dataset$within_range <- dataset$end_date >= date_range_start & dataset$end_date <= date_range_end
+# Check if all date are within time interval
+all_dates_within_range <- all(dataset$within_range)
+all_dates_within_range 
+
+# Check if all values in the answer column are either "Donald Trump" or "Kamala Harris" 
+valid_answers <- c("Donald Trump", "Kamala Harris") 
+only_valid_answers <- all(analysis_data$candidate_name %in% valid_answers) # Output the result 
+only_valid_answers # This will return TRUE if all answers are valid, FALSE otherwise
+
+
+# Check if pct are between 30 to 60
+if (all(analysis_data$pct >= 30 & analysis_data$pct <= 60)) {
+  message("Test Passed: PCT are between 30 to 60.")
 } else {
-  stop("Test Failed: The 'party' column contains less than two unique values.")
+  stop("Test Failed: PCT exceed the range.")
+}
+
+
+# Check if sample size are between 400 to 8000
+if (all(analysis_data$sample_size >= 400 & analysis_data$sample_size <= 8000)) {
+  message("Test Passed: Sample size are between 400 to 8000.")
+} else {
+  stop("Test Failed: Sample size exceed the range.")
 }

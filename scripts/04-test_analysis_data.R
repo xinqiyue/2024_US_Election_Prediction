@@ -1,69 +1,73 @@
-#### Preamble ####
-# Purpose: Tests... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 26 September 2024 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
-
-
 #### Workspace setup ####
 library(tidyverse)
 library(testthat)
 
-data <- read_csv("data/02-analysis_data/analysis_data.csv")
+analysis_data <- read_csv("data/02-analysis_data/president_polls_cleaned_data.csv")
 
 
 #### Test data ####
-# Test that the dataset has 151 rows - there are 151 divisions in Australia
-test_that("dataset has 151 rows", {
-  expect_equal(nrow(analysis_data), 151)
-})
 
-# Test that the dataset has 3 columns
-test_that("dataset has 3 columns", {
-  expect_equal(ncol(analysis_data), 3)
-})
+# Check if the dataset has 5 columns
+if (ncol(analysis_data) == 5) {
+  message("Test Passed: The dataset has 5 columns.")
+} else {
+  stop("Test Failed: The dataset does not have 5 columns.")
+}
 
-# Test that the 'division' column is character type
-test_that("'division' is character", {
-  expect_type(analysis_data$division, "character")
-})
 
-# Test that the 'party' column is character type
-test_that("'party' is character", {
-  expect_type(analysis_data$party, "character")
-})
+# Check if the 'state' column contains only valid Australian state names
+valid_states <- c("National", "Arizona", "California", "Georgia", "North Carolina", 
+                  "Washington", "Pennsylvania", "New Hampshire", "Texas", "Michigan", 
+                  "Nevada", "Wisconsin", "Montana", "Florida", "Ohio", "Massachusetts", "Virginia",
+                  "South Carolina", "Nebraska CD-2", "Minnesota", "New York", "Nebraska", "Maryland",
+                  "New Mexico", "Connecticut", "Rhode Island", "Missouri", "Indiana", "Iowa", "Vermont",
+                  "Maine", "Maine CD-1", "Maine CD-2")
 
-# Test that the 'state' column is character type
-test_that("'state' is character", {
-  expect_type(analysis_data$state, "character")
-})
+if (all(analysis_data$state %in% valid_states)) {
+  message("Test Passed: The 'state' column contains only valid Australian state names.")
+} else {
+  stop("Test Failed: The 'state' column contains invalid state names.")
+}
 
-# Test that there are no missing values in the dataset
-test_that("no missing values in dataset", {
-  expect_true(all(!is.na(analysis_data)))
-})
 
-# Test that 'division' contains unique values (no duplicates)
-test_that("'division' column contains unique values", {
-  expect_equal(length(unique(analysis_data$division)), 151)
-})
+# Check if there are any missing values in the dataset
+if (all(!is.na(analysis_data))) {
+  message("Test Passed: The dataset contains no missing values.")
+} else {
+  stop("Test Failed: The dataset contains missing values.")
+}
 
-# Test that 'state' contains only valid Australian state or territory names
-valid_states <- c("New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", 
-                  "Tasmania", "Northern Territory", "Australian Capital Territory")
-test_that("'state' contains valid Australian state names", {
-  expect_true(all(analysis_data$state %in% valid_states))
-})
+# Check if there are no empty strings in 'state'
+if (all(analysis_data$state != "")) {
+  message("Test Passed: There are no empty strings in 'state'.")
+} else {
+  stop("Test Failed: There are empty strings in one or more columns.")
+}
+# Check if end time exceed 2024-7-21
+date_range_start <- as.Date('2024-7-21')
+dataset <- read_csv("data/00-simulated_data/simulated_president_polls.csv")
+dataset$within_range <- dataset$end_date >= date_range_start
+# Check if all date are within time interval
+all_dates_within_range <- all(dataset$within_range)
+all_dates_within_range 
 
-# Test that there are no empty strings in 'division', 'party', or 'state' columns
-test_that("no empty strings in 'division', 'party', or 'state' columns", {
-  expect_false(any(analysis_data$division == "" | analysis_data$party == "" | analysis_data$state == ""))
-})
+# Check if all values in the answer column are either "Donald Trump" or "Kamala Harris" 
+valid_answers <- c("Donald Trump", "Kamala Harris") 
+only_valid_answers <- all(analysis_data$candidate_name %in% valid_answers) # Output the result 
+only_valid_answers # This will return TRUE if all answers are valid, FALSE otherwise
 
-# Test that the 'party' column contains at least 2 unique values
-test_that("'party' column contains at least 2 unique values", {
-  expect_true(length(unique(analysis_data$party)) >= 2)
-})
+
+# Check if pct are between 0 to 100
+if (all(analysis_data$pct >= 0 & analysis_data$pct <= 100)) {
+  message("Test Passed: PCT are between 0 to 100.")
+} else {
+  stop("Test Failed: PCT exceed the range.")
+}
+
+
+# Check if sample size are larger than 0
+if (all(analysis_data$sample_size > 0)) {
+  message("Test Passed: Sample size are larger than 0.")
+} else {
+  stop("Test Failed: Sample size are less than and equal to 0.")
+}
