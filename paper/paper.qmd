@@ -89,6 +89,34 @@ Telegraphing paragraph: The remainder of this paper is structured as follows. @s
 
 ## Overview
 The dataset encompasses polling data focused on two candidates, Donald Trump and Kamala Harris. Data has been filtered to include only results from pollsters with a numeric grade above 2.5 to maintain quality and consistency. This selection allows us to focus on higher-rated sources, which may enhance the reliability of predictions. Each record includes information on the pollster, their grading, polling methodology, transparency score, and specific polling results for each candidate.
+```{r}
+#| label: tbl-raw-data-1
+#| tbl-cap: First 6 entries of Raw Dataset with varibles 'state','end_date','sample_size', 'canadidate_name','pct'
+#| echo: false
+#| warning: false
+#| message: false
+
+raw_data <- read_csv(here::here("data/01-raw_data/president_polls.csv"))
+#Graph
+head_raw_data <- head(raw_data,6)
+# Note there is a type in Description within the original data set itself
+knitr::kable(head_raw_data[, c(13,15,23,51,52)], format = "simple",col.names = c('State','End date','Sample Size', 'Canadidate Name','PCT'))
+
+```
+
+```{r}
+#| label: tbl-analysis-data-1
+#| tbl-cap: First 6 entries of Analysis Dataset
+#| echo: false
+#| warning: false
+#| message: false
+
+#Graph
+head_analysis_data <- head(president_polls_cleaned_data,6)
+# Note there is a type in Description within the original data set itself
+knitr::kable(head_analysis_data[, 1:5], format = "simple", col.names = c('State','End date','Sample Size', 'Canadidate Name','PCT'))
+
+```
 
 ## Explanation of each variables
 - **pollster**: The organization that conducted the poll, providing information on who gathered the data.
