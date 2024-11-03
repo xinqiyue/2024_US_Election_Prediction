@@ -33,23 +33,6 @@ president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_da
 ```
 
 
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-base_plot <- ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
-  theme_classic() +
-  labs(y = "Candidate Support (%)", x = "Date") 
-#+  scale_x_date(date_labels = "%b %Y")  # 设置 x 轴只显示月份和年份
-
-# 绘制候选人支持率的点图和光滑线
-base_plot + 
-  geom_point() + 
-  geom_smooth(se = FALSE) + 
-  theme(legend.position = "bottom")
-```
-
-
 
 
 ```{r}
@@ -168,6 +151,23 @@ ggplot(data = president_polls_cleaned_data, aes(x = state, y = pct, fill = candi
 ```
 
 ### Exploring the Relationship Between End Date and PCT
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+base_plot <- ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
+  theme_classic() +
+  labs(y = "Candidate Support (%)", x = "Date") 
+#+  scale_x_date(date_labels = "%b %Y")  # 设置 x 轴只显示月份和年份
+
+# 绘制候选人支持率的点图和光滑线
+base_plot + 
+  geom_point() + 
+  geom_smooth(se = FALSE) + 
+  theme(legend.position = "bottom")
+```
+
 ```{r}
 #| label: fig-pct-time
 #| fig-cap: Trends in Candidate Support Over Time
@@ -310,19 +310,21 @@ modelsummary::modelsummary(
 
 # Discussion
 
-## First discussion point {#sec-first-point}
+## Overview of the Paper
+This paper presents a comprehensive analysis of polling data to forecast support for candidates Kamala Harris and Donald Trump in the upcoming U.S. presidential election. By employing a Bayesian linear regression model, the study investigates how various factors such as polling date, candidate identity, sample size, and geographic location influence voter support. The findings contribute to understanding the dynamics of electoral support and the effectiveness of polling methodologies in predicting election outcomes.
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+## Insights About the World
+One significant insight derived from this analysis is the importance of temporal dynamics in voter support. The model highlights that the timing of polling can substantially impact the reported support for candidates. This finding suggests that voters’ preferences are not static; rather, they fluctuate based on current events, campaign strategies, and media coverage. Such insights underscore the need for political strategists and candidates to consider timing when conducting polls and planning campaign efforts.
 
-## Second discussion point
+Another critical takeaway is the varying levels of support for candidates across different states. The analysis reveals regional disparities in voter sentiment, indicating that geographic factors significantly influence political preferences. This highlights the importance of localized campaign strategies and targeted outreach, as what resonates in one state may not hold true in another. Understanding these regional differences can enhance candidates' ability to connect with voters and tailor their messaging effectively.
 
-Please don't use these as sub-heading labels - change them to be what your point actually is.
+## Limitations of the Study
+Despite its contributions, the study is not without weaknesses. One notable limitation is the reliance on existing polling data, which may introduce biases if the data collection methods are not standardized across pollsters. Variations in methodology, sample demographics, and question phrasing can lead to discrepancies in reported support levels. Additionally, the model assumes a linear relationship between predictors and outcomes, which may oversimplify the complexities of voter behavior. A more nuanced approach that incorporates non-linear effects or interactions between variables could provide deeper insights into voter dynamics.
 
-## Third discussion point
+## Future Directions
+Looking ahead, several avenues for further research emerge from this study. First, it would be valuable to explore the impact of specific events, such as debates or major news stories, on voter sentiment. Incorporating real-time data and sentiment analysis from social media could enrich the understanding of how public opinion shifts in response to external influences. Furthermore, expanding the model to include demographic factors—such as age, income, and education—could yield a more comprehensive picture of voter support and the diverse motivations behind electoral choices.
 
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
+In conclusion, while this paper offers valuable insights into electoral dynamics, it also highlights the complexities of voter behavior and the need for continued exploration in this field. Future research should strive to incorporate a broader range of variables and methodologies to enhance the predictive accuracy of electoral forecasts and better inform political strategy.
 
 \newpage
 
