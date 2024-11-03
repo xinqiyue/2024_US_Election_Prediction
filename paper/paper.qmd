@@ -34,8 +34,27 @@ president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_da
 
 
 ```{r}
-# plot graphof pct of two candidates in each state against time
-ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = state)) +
+base_plot <- ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
+  theme_classic() +
+  labs(y = "Candidate Support (%)", x = "Date") 
+#+  scale_x_date(date_labels = "%b %Y")  # 设置 x 轴只显示月份和年份
+
+# 绘制候选人支持率的点图和光滑线
+base_plot + 
+  geom_point() + 
+  geom_smooth(se = FALSE) + 
+  theme(legend.position = "bottom")
+```
+
+
+
+
+```{r}
+# plot graph of pct of two candidates in each state against time
+ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct
+                                         #, color = state
+                                         )
+       ) +
   geom_point() +
   facet_wrap(~ candidate_name, scales = "free_y") +
   theme_minimal() +
@@ -46,7 +65,6 @@ ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = state)) 
     color = "state",
     title = "pct of Donald Trump and Kamala Harris in each states",
   )
-unique(president_polls_cleaned_data$methodology)
 ```
 
 # Introduction

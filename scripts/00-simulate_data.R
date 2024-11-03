@@ -49,8 +49,5 @@ president_polls <- data.frame(
   #, num_candidates = round((pct / 100) * sample_size, 0)
 )
 
-# Check the first few rows of the simulated data
-head(president_polls)
-
 #### Save data ####
 write.csv(president_polls, "data/00-simulated_data/simulated_president_polls.csv")
