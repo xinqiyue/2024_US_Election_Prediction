@@ -8,9 +8,11 @@ author:
 thanks: "Code and data are available at: [https://github.com/xinqiyue/2024_US_Election_Prediction](https://github.com/xinqiyue/2024_US_Election_Prediction)."
 date: today
 date-format: long
-abstract: "This paper builds a predictive Bayesian model to forecast the 2024 US presidential election using a “poll-of-polls” approach, analyzing high-quality polls for Kamala Harris and Donald Trump. The model incorporates data on polling methodology, state trends, and candidate support. Our findings indicate that xxxxxxxx. This study contributes to a deeper understanding of electoral forecasting, helping us interpret aggregated polling data to anticipate election results accurately."
+abstract: "This paper builds a predictive Bayesian model to forecast the 2024 US presidential election using a “poll-of-polls” approach, analyzing high-quality polls for Kamala Harris and Donald Trump. The model incorporates data on polling methodology, state trends, and candidate support. Our findings indicate that although no candidate is guaranteed to win a total of 270 electoral votes due to lack of polls in certain states, Kamala Harris is more likely to win the election with 222 electoral votes against Donald Trump's 109 electoral votes. This study contributes to an understanding of electoral forecasting, helping us interpret aggregated polling data to anticipate election results."
 format: pdf
 number-sections: true
+table-of-contents: true
+toc-depth: 2
 bibliography: references.bib
 ---
 
@@ -18,7 +20,11 @@ bibliography: references.bib
 #| include: false
 #| warning: false
 #| message: false
-
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(rstanarm)
+library(ggplot2)
 library(tidyverse)
 library(arrow)
 ```
@@ -35,82 +41,26 @@ president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_da
 
 
 
-
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-# plot graph of pct of two candidates in each state against time
-ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct
-                                         #, color = state
-                                         )
-       ) +
-  geom_point() +
-  facet_wrap(~ candidate_name, scales = "free_y") +
-  theme_minimal() +
-  #theme(legend.position = "bottom") +
-  labs(
-    y = "pct",
-    x = "end date",
-    color = "state",
-    title = "pct of Donald Trump and Kamala Harris in each states",
-  )
-```
-
 # Introduction
 The 2024 U.S. presidential election is generating significant public interest, with recent polling reflecting shifts in candidate support across various demographic and regional groups. Polling data, while insightful, presents challenges due to inherent biases, variability in polling methodology, and regional influences on voter behavior. This study aims to address these challenges using a "poll-of-polls" approach, aggregating high-quality national and state polls to forecast voter support for Kamala Harris and Donald Trump. By applying Bayesian modeling, this analysis incorporates both the temporal dynamics of candidate support and state-specific trends.
 
-In this paper, we explore the following questions: How is support for each candidate likely to evolve as the election approaches? How do regional differences influence overall voter sentiment? This paper contributes to electoral forecasting literature by synthesizing aggregated polling data to provide a nuanced view of candidate support trends.
+Our model predicts trends in voter support for the 2024 U.S. Presidential Election, focusing on Donald Trump and Kamala Harris. The results, visualized in @fig-modelvisual, indicate stable support for Harris at an estimated 52% nationally, with a confidence interval of approximately 49% to 55%. Trump’s predicted support level centers around 46%, with a range of about 43% to 49%, showing a slight downward trend as the election date nears. State-specific polling results highlight variances, with Harris showing stronger support in traditionally Democratic areas like Maine CD-1, where predicted support reaches around 62%. In contrast, battleground states such as Georgia, Florida, and Pennsylvania exhibit closely contested support levels, reflecting competitive races in these regions. These predictions underscore the variability in voter sentiment across states, illustrating the importance of both national and regional factors shaping the electoral landscape.
+
+In remainder of this paper, we structure our analysis as follows. @sec-data provides a detailed overview of the data used, including the data cleaning process, explanations of the predictor and outcome variables, as well as other variables that contribute to the model. We also present relevant data visualizations to illustrate initial trends and patterns. @sec-model focuses on the model setup and methodology, specifically detailing the Bayesian model used, its underlying assumptions, and software choices. @sec-result presents our main results, including both the model's outputs and the predictions of voter support for the key candidates. In @sec-discussion, we discuss the findings, offer insights into the broader implications, and highlight the limitations and potential directions for future research. Finally, the appendices provide additional methodological analysis, an idealized survey methodology, and supporting details for the data and model diagnostics.
 
 ## Estimand
 
 Our primary estimand is the percentage of voter support for Donald Trump and Kamala Harris on election day. We estimate this support percentage both at the national level and by state, incorporating time and state-specific effects.
-
-Results paragraph
-
-Why it matters paragraph
-
-Telegraphing paragraph: The remainder of this paper is structured as follows. @sec-data....
 
 
 
 # Data {#sec-data}
 
 ## Data Overview {#sec-data-overview}
-The dataset encompasses polling data focused on two candidates, Donald Trump and Kamala Harris. Data has been filtered to include only results from pollsters with a numeric grade above 2.5 to maintain quality and consistency. This selection allows us to focus on higher-rated sources, which may enhance the reliability of predictions. Each record includes information on the pollster, their grading, polling methodology, transparency score, and specific polling results for each candidate.
+@sec-data centers on a polling dataset for Donald Trump and Kamala Harris, filtered for quality by including only results from pollsters with a numeric grade above 2.5. Key variables such as state, end date, sample size, candidate name, and support percentage (pct) are identified. The data cleaning process standardizes column names, retains relevant fields, and addresses missing values to ensure high-quality data for analysis. The section includes a table presenting the first six entries of the cleaned analysis dataset, alongside multiple graphs: a bar graph comparing candidate support percentages by state, scatter plots illustrating trends in candidate support over time, and visualizations examining the relationship between sample size and support percentages. 
 
 The analysis utilizes FiveThirtyEight's dataset of national presidential general election polls [@fivethirtyeight]. Following the approach outlined in [@tellingstories], we aim to predict the election outcome based on this polling data. The analyses were conducted in R @citeR, with support from several packages. The `tidyverse` packages [@citetidyverse] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], data cleaning process was done by using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], and `arrow` package [@citearrow]. Then, models were constructed using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], `rstanarm` [@citerstanarm] package, and `splines` package [@citesplines]. The model results are then presented by `modelsummary` [@citemodelsummary] package, and graphs were made with `ggplot2` package [@citeggplot].
 
-```{r}
-#| label: fig-all-obs
-#| tbl-cap: Support Rates of Donald Trump and Kamala Harris by State
-#| echo: false
-#| warning: false
-#| message: false
-state_support_rates <- president_polls_cleaned_data %>%
-  group_by(state, candidate_name) %>%
-  summarise(avg_pct = mean(pct, na.rm = TRUE)) %>%
-  ungroup()
-
-# Correlation analysis
-ggplot(state_support_rates, aes(x = state, y = avg_pct, fill = candidate_name)) +
-  geom_bar(stat = "identity", position = "dodge", width = ) +
-  labs(title = "Support Rates of Donald Trump and Kamala Harris by State",
-       y = "Average Support Rate (%)",
-       x = "State") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
-  geom_point(size = 0.5) +
-  facet_wrap(~ state, scales = "free_y") +
-  labs(title = "Support Rates of Donald Trump and Kamala Harris by State",
-       y = "Support Rate (%)",
-       x = "Date",
-       color = "Candidate") +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-```
 
 ## Data Clean
 We clean the raw data to produce the analysis dataset using the tools listed in the @sec-data-overview, providing high-quality data for subsequent election analysis. Firstly, we standardize column names to lowercase and remove special characters. Then, we retain only the fields relevant to the election analysis, such as `state`, `end_date`, `sample_size`, `candidate_name`, and `pct` (percentage support), simplifying the data structure by removing unnecessary columns. Next, we remove rows with missing values and replace empty values in the `state` column with "National," indicating these records pertain to nationwide polls. Additionally, we convert the `end_date` column to date format, ensuring accuracy in date-based filtering. Then, we filter the data to retain only records that meet specific criteria: a `numeric_grade` of 2.5 or higher, a `candidate_name` of either "Kamala Harris" or "Donald Trump" (focusing on these two candidates' support levels), an `end_date` on or after July 21, 2024 (focusing on recent polling when Biden withdrawal from the election), and a non-empty `end_date` (filtering out records with missing dates).
@@ -143,6 +93,8 @@ knitr::kable(head_analysis_data[, 1:5], format = "simple", col.names = c('State'
 
 - **pct**: The support percentage each candidate received in the poll, which serves as the outcome variable for analysis.
 
+pct is the support percentage each candidate received in the poll, which serves as the outcome variable for analysis. This variable is crucial for understanding the electoral dynamics, as it quantifies the level of public backing for each candidate at a given time and place. By analyzing the pct variable, researchers can assess trends in voter sentiment, compare the effectiveness of campaign strategies, and identify which demographic groups are more inclined to support one candidate over the other. Additionally, fluctuations in the pct can signal shifts in public opinion that may correlate with significant political events, media coverage, or changes in candidates' messaging. This outcome variable allows for a comprehensive analysis of the electoral landscape, providing insights into how various factors influence voter behavior and preferences throughout the campaign. 
+
 ## Explanation of Other Variables Used
 - **pollster**: The organization that conducted the poll, providing information on who gathered the data.
   
@@ -156,8 +108,6 @@ knitr::kable(head_analysis_data[, 1:5], format = "simple", col.names = c('State'
 
 ## Measurement
 The goal of this measurement is to turn individual voter opinions into a reliable estimate of electoral college outcomes by analyzing polling data. This data, sourced from @fivethirtyeight—a trusted platform known for high standards—includes only polls that meet rigorous quality criteria, ensuring broad representation of likely U.S. voters. Polls provide essential details, such as the pollster’s identity, survey dates, sample size, and methodology, covering data collection mode, demographic weighting, and adjustments to create a representative sample. These quality standards, while robust, are based on historical practices, which may overlook recent methodological shifts or emerging biases.
-
-## Limitation
 Polling has inherent limitations. It provides snapshots of voter sentiment at specific times rather than ongoing updates, potentially missing rapid shifts in public opinion, especially near Election Day. Adjustments are made for recency, but participation and response biases—like self-selection and social desirability bias—can still impact accuracy by creating gaps between expressed opinions and actual voting behavior. Additionally, regional polling disparities, with battleground states polled more frequently than “safe” states, can lead to imbalances in representation, highlighting the challenge of achieving uniformly accurate forecasts across the nation.
 
 ## Data visualization
@@ -169,9 +119,8 @@ Polling has inherent limitations. It provides snapshots of voter sentiment at sp
 #| echo: false
 #| warning: false
 #| message: false
-
-# Load ggplot2
-library(ggplot2)
+#| fig-width: 14
+#| fig-height: 8
 
 ggplot(data = president_polls_cleaned_data, aes(x = state, y = pct, fill = candidate_name)) +
   geom_bar(stat = "identity", position = "dodge") +
@@ -181,6 +130,8 @@ ggplot(data = president_polls_cleaned_data, aes(x = state, y = pct, fill = candi
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 ```
+@fig-pct-state compares support percentages for Donald Trump and Kamala Harris across U.S. states, using pink bars for Trump and light blue for Harris. The y-axis shows support percentages up to around 70%, while the x-axis lists states, each with two bars per candidate. @fig-pct-state reveals regional popularity variations. In some states, bars for both candidates are nearly equal in height, indicating competitive support. Other states show one candidate with a clear lead, highlights the varying levels of popularity for each candidate in different regions, which may reflect political, demographic, or regional factors influencing voter preferences. For instance, California leans toward Harris, with a taller blue bar, while Texas favors Trump, with a taller pink bar. These patterns reflect regional political tendencies, suggesting which states might be strongholds or battlegrounds. They highlight potential areas where each candidate could focus efforts to strengthen support or appeal to undecided voters.
+
 
 ### Exploring the Relationship Between End Date and PCT
 
@@ -190,6 +141,8 @@ ggplot(data = president_polls_cleaned_data, aes(x = state, y = pct, fill = candi
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-width: 7
+#| fig-height: 3
 
 # Load ggplot2
 library(ggplot2)
@@ -199,15 +152,73 @@ ggplot(data = president_polls_cleaned_data, aes(x = end_date, y = pct, color = c
   geom_point(size = 1) + # Add data point
   geom_smooth(se = FALSE) + 
   scale_color_manual(values = c("Donald Trump" = "pink", "Kamala Harris" = "lightblue")) + 
-  labs(x = "State",
-       y = "Support Percentage (%)") + # Add X-axis and Y-axis
+  labs(x = "End Date",
+       y = "Support Percentage (%)",
+       color = "Candidate Name") +
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  #theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(legend.position = "bottom")
 ```
 
+@fig-pct-time visualizes support percentages for Donald Trump and Kamala Harris over time, with each point representing a poll. The x-axis shows poll end dates, extending beyond July 21st, while the y-axis reflects support percentages. Pink dots represent Trump, and light blue dots represent Harris.nTrend lines for each candidate show Harris consistently above Trump, indicating a slight but steady lead. Harris’s trend remains around 50%, while Trump’s is just below. Both lines are stable, with no major fluctuations in support over time, suggesting limited change in public opinion. The close clustering of points around each trend line indicates steady support levels for both candidates, with Harris maintaining a modest lead throughout the period.
 
-# Model
+
+
+```{r}
+#| label: fig-pct-sample-size
+#| fig-cap: Support for Candidates by Sample Size
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 7
+#| fig-height: 3
+
+# Load ggplot2
+library(ggplot2)
+
+ggplot(data = president_polls_cleaned_data, aes(x = sample_size, y = pct, color = candidate_name, group = candidate_name)) +
+  geom_point(size = 1) + # Add data point
+  scale_color_manual(values = c("Donald Trump" = "pink", "Kamala Harris" = "lightblue")) + 
+  labs(x = "Sample size",
+       y = "Support Percentage (%)",
+       color = "Candidate Name") + 
+  theme_minimal() + 
+  #theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "bottom")
+```
+@fig-pct-sample-size examines the relationship between poll sample size and support percentage for Donald Trump and Kamala Harris. The x-axis represents poll sample sizes, ranging from a few hundred to over 6,000, while the y-axis shows support percentages. Pink dots indicate Trump’s support, and light blue dots represent Harris. Most polls have sample sizes under 2,000, with support percentages clustering between 40% and 55% for both candidates. As sample sizes increase, support percentages stabilize around the 45%–55% range, though fewer large-sample polls exist. Smaller polls show more variability, with support percentages ranging from 30% to 60%, while larger polls yield more consistent results near 50%.Overall, the plot suggests that larger polls offer more stable estimates of support, while smaller polls tend to show greater fluctuation.
+
+
+
+### Exploring the Relationship Between End Date and State and PCT
+```{r}
+#| label: fig-all-obs
+#| fig-cap: Support Rates of Donald Trump and Kamala Harris by State and end date
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 8
+#| fig-height: 10
+
+state_support_rates <- president_polls_cleaned_data %>%
+  group_by(state, candidate_name) %>%
+  summarise(avg_pct = mean(pct, na.rm = TRUE)) %>%
+  ungroup()
+
+ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
+  geom_point(size = 0.7) +
+  facet_wrap(~ state, scales = "free_y") +
+  labs(title = "Support Rates of Donald Trump and Kamala Harris by State",
+       y = "Support Rate (%)",
+       x = "Date",
+       color = "Candidate Name") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+@fig-all-obs comprises scatter plots illustrating the support rates for Donald Trump and Kamala Harris across various states, with the y-axis representing percentage support and the x-axis indicating the timeline. Red dots represent Trump's support, while blue dots indicate Harris's. The visualization shows fluctuating support levels for both candidates, with Harris generally receiving higher support in states like California and New York, whereas states like Florida and Indiana display a more competitive landscape. The national plot reveals trends in support, reflecting periods of gain or loss for both candidates, suggesting that voter sentiment is dynamic and influenced by external factors during the campaign. Overall, the figure highlights the changing electoral support for Trump and Harris across states and time.
+
+
+# Model {#sec-model}
 In this analysis, we use a Bayesian linear regression model to estimate the percentage of support (`pct`) for each candidate in the upcoming US presidential election. The model includes key predictors such as polling end date (`end_date`), candidate (`candidate_name`), sample size (`sample_size`), and state (`state`). Each predictor is selected based on its relevance to the variation in candidate support, as discussed in the data section.
 
 ## Model set-up
@@ -266,14 +277,18 @@ Overall, this Bayesian model provides a balanced approach, capturing key effects
 
 ### Model justification
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+In this analysis, we utilize a Bayesian linear regression model to predict the percentage of voter support for Donald Trump and Kamala Harris in the 2024 U.S. Presidential Election. This choice of modeling framework is particularly suitable for our objectives, as it allows for the incorporation of prior knowledge regarding electoral dynamics while updating predictions based on newly observed data. The Bayesian approach provides a robust mechanism for estimating uncertainty in our predictions, which is crucial in the context of political polling where public sentiment can fluctuate significantly.
+The model structure includes key predictors: the polling end date, candidate name, sample size, and state. The use of these predictors is justified by their established relevance in previous electoral analyses, highlighting their roles in shaping voter preferences. The inclusion of `end_date` facilitates the examination of temporal trends in support, reflecting how candidate visibility and public sentiment evolve as the election date approaches.
+We model the outcome variable, support percentage (pct), as a normally distributed random variable influenced by these predictors. The mathematical formulation allows for the representation of the intercept, which denotes the baseline support level, alongside coefficients that quantify the influence of each predictor. The priors assigned to the model parameters are carefully chosen to reflect reasonable expectations based on historical voting patterns, thus enhancing the model's interpretability and effectiveness.
+Moreover, the Bayesian framework enables the modeling of potential interactions between state-specific effects and candidate support, allowing us to capture the regional variations that are often observed in electoral outcomes. By incorporating individual pollster effects as fixed coefficients, we can account for the inherent biases associated with different polling organizations, ensuring that our model provides a nuanced view of candidate support.
+This model's formulation strikes a balance between complexity and interpretability, allowing for a comprehensive analysis of the factors influencing voter sentiment while maintaining computational efficiency. The Bayesian approach not only enhances our understanding of electoral dynamics but also provides a statistically sound basis for forecasting potential election outcomes. Overall, the chosen model is well-aligned with the objectives of this study, facilitating a robust analysis of polling data to derive meaningful insights into the upcoming election.
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
 
 
-# Results
 
-Our results are summarized in @tbl-modelresults.
+# Results {#sec-result}
+
+## Model Result
 
 ```{r}
 #| echo: false
@@ -281,32 +296,187 @@ Our results are summarized in @tbl-modelresults.
 #| warning: false
 #| message: false
 
-library(rstanarm)
+model<-
+  readRDS(file = here::here("models/election_glm_model.rds"))
 
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
 ```
 
 ```{r}
 #| echo: false
 #| eval: true
 #| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| tbl-cap: "Model Results of Trump Percentage Vote based on Date and State"
 #| warning: false
 
 modelsummary::modelsummary(
   list(
-    "First model" = first_model
+    "Bayesian Model" = model
   ),
-  statistic = "mad",
   fmt = 2
 )
 ```
 
+@tbl-modelresults provide insights into the factors influencing voter support for Donald Trump and Kamala Harris, based on a total of 846 observations. The model intercept is estimated at -397.72, serving as a baseline from which other coefficients are interpreted. Notably, the coefficient for the polling end date is 0.02, indicating a positive relationship between the date and support percentage, suggesting that as the election approaches, support for the candidates slightly increases, likely due to heightened visibility and engagement. The coefficient for Kamala Harris is 1.81, reflecting her higher expected support relative to Donald Trump, which indicates her appeal among voters during the polling period.
+@tbl-modelresults also includes state-specific coefficients that capture regional variations in support. For instance, states such as Maine CD-1 (4.05), Missouri (1.66), and New Mexico (1.73) show positive coefficients, indicating stronger support for the candidate in these regions. Conversely, negative coefficients for states like Vermont (-2.37), New York (-1.92), and Massachusetts (-1.85) suggest lower support levels, highlighting potential challenges in these areas. 
+However, the model's adjusted R² value of -0.056 indicates that the predictors included do not explain a substantial amount of the variability in support percentages, suggesting that other unmeasured factors may influence voter preferences. The log-likelihood value of -2412.946, along with an effective sample size for the expected log pointwise predictive density (ELPD) of -2463.8 and a leave-one-out information criterion (LOOIC) of 4927.6, indicate moderate predictive accuracy. Additionally, the root mean square error (RMSE) of 4.18 suggests that the predicted percentages deviate from actual support levels by approximately 4.18 percentage points on average. Overall, these results underscore the importance of both temporal dynamics and regional differences in predicting voter support, while also indicating a need for further exploration of additional variables that may more effectively account for observed voter preferences.
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-modelvisual
+#| fig-cap: "Predict Posterior Draws and Spline Fit for Vote Percentage"
+#| warning: false
+#| fig-width: 12
+#| fig-height: 8
+
+# Create a new data frame for predictions
+new_data <- expand.grid(
+  end_date = seq(
+    min(president_polls_cleaned_data$end_date),
+    max(president_polls_cleaned_data$end_date),
+    length.out = 100
+  ),
+  sample_size = mean(president_polls_cleaned_data$sample_size),
+  state = factor(c("National", "Arizona", "California", "Georgia", "North Carolina", "Washington", "Pennsylvania", "New Hampshire", "Texas", "Michigan", "Nevada", "Wisconsin", "Montana", "Florida", "Ohio", "Massachusetts", "Virginia", "South Carolina", "Nebraska CD-2", "Minnesota", "New York", "Nebraska", "Maryland", "New Mexico", "Connecticut", "Rhode Island", "Missouri", "Indiana", "Iowa", "Vermont", "Maine", "Maine CD-1", "Maine CD-2")),
+  candidate_name = factor(c("Kamala Harris", "Donald Trump"))  # Only two candidates for simplicity
+)
+
+# Generate posterior predictions
+posterior_preds <- posterior_predict(model, newdata = new_data)
+
+# Summarize predictions
+pred_summary <- new_data %>%
+  mutate(
+    pred_mean = colMeans(posterior_preds),
+    pred_lower = apply(posterior_preds, 2, quantile, probs = 0.025),
+    pred_upper = apply(posterior_preds, 2, quantile, probs = 0.975)
+  )
+
+# Visualization
+ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
+  geom_point(aes(shape = state), alpha = 0.5) +  # Use state as shape
+  geom_line(
+    data = pred_summary,
+    aes(x = end_date, y = pred_mean, color = candidate_name),
+    size = 1.2,  # Make the line thicker
+    inherit.aes = FALSE
+  ) +
+  geom_ribbon(
+    data = pred_summary,
+    aes(x = end_date, ymin = pred_lower, ymax = pred_upper),
+    alpha = 0.2,
+    inherit.aes = FALSE
+  ) +
+  labs(
+    x = "End Date",
+    y = "Percentage",
+    title = "Predicted Percentage Over Time",
+    color = "Candidate",
+    shape = "State"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.key.size = unit(1, "cm"),
+    legend.text = element_text(size = 8) 
+  )
 
 
 
-# Discussion
+```
+@fig-modelvisual produced predicted percentages of voter support for Donald Trump and Kamala Harris over time, as shown in the graph titled "Predicted Percentage Over Time." The y-axis represents the predicted support percentage, while the x-axis indicates polling end dates.
+@fig-modelvisual reveals distinct trends in voter support for both candidates. The predictions for Kamala Harris (shown in teal) suggest a mean support level consistently around 52% during this period, with the confidence interval shaded in gray indicating a range from approximately 49% to 55%. This stability suggests that Harris maintains a competitive edge in voter support as the election date approaches.In contrast, the predicted percentages for Donald Trump (shown in red) indicate a mean support level around 46%, with a confidence interval ranging from about 43% to 49%. This pattern highlights a slight downward trend in Trump’s predicted support, suggesting potential challenges in consolidating voter sentiment as the election draws near.
+The individual data points on the graph represent specific state polling results, with various shapes indicating different states. For example, Maine CD-1 stands out with a higher predicted support for Harris at approximately 62%, which is significantly above the national average, indicating a strong preference in this district. Conversely, states like Florida and North Carolina exhibit more competitive support levels, with both candidates’ predicted percentages clustering around 47% to 50%.The presence of a broader range of predicted support percentages in battleground states such as Georgia and Pennsylvania reflects the volatility of voter sentiment in these regions, where Trump and Harris show closely contested support. The model indicates that Harris may benefit from higher support levels in traditionally Democratic states, while Trump faces a challenge in securing sufficient backing in key swing states.
+Overall, @fig-modelvisual underscore the dynamic nature of voter preferences as the election approaches, with Harris appearing to lead in overall support while Trump must contend with fluctuating voter sentiments in critical states. These predictions provide a view of how various factors, including time and state-specific influences, shape the electoral landscape leading up to the 2024 U.S. Presidential Election.
+
+
+
+
+## Predict Result
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-modelpctsummary
+#| fig-cap: "Summary table of average pct for each candidate by state"
+#| warning: false
+
+
+# Create summary table of average pct for each candidate by state
+average_pct_summary <- president_polls_cleaned_data %>%
+  group_by(state, candidate_name) %>%
+  summarise(average_pct = mean(pct, na.rm = TRUE), .groups = 'drop') %>%
+  pivot_wider(names_from = candidate_name, values_from = average_pct, 
+              names_prefix = "avg_pct_of_")
+
+# Output the table
+knitr::kable(average_pct_summary, format = "simple", col.names = c('State','PCT of Trump','PCT of Harris'))
+
+```
+
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-modelvotenum
+#| fig-cap: "Summary total votes for each candidate"
+#| warning: false
+
+# Use information from https://state.1keydata.com/state-electoral-votes.php to create dataframe
+electoral_votes <- data.frame(
+  state = c("Arizona", "California", "Connecticut", "Florida", "Georgia",
+            "Indiana", "Iowa", "Maine", "Maine CD-1", "Maine CD-2",
+            "Maine CD-3", "Maryland", "Massachusetts", "Michigan", "Minnesota", 
+            "Missouri", "Montana", "Nebraska", "Nebraska CD-1",
+            "Nebraska CD-2", "Nebraska CD-3", "Nevada", "New Hampshire", 
+            "New Mexico", "New York", "North Carolina", "Ohio", 
+            "Pennsylvania", "Rhode Island", "South Carolina", 
+            "South Dakota", "Texas", "Vermont", "Virginia", 
+            "Washington", "Wisconsin"),
+  votes = c(11, 55, 7, 29, 16, 11, 6, 4, 1, 1,
+            1, 10, 11, 15, 10, 10, 3, 5, 2, 1,
+            6, 4, 5, 29, 15, 3, 9, 4, 9, 6, 
+            13, 3, 10, 10, 8, 10)
+)
+
+# calculate total votes of each candidate
+total_votes <- average_pct_summary %>%
+  left_join(electoral_votes, by = "state") %>%
+  mutate(
+    winner = case_when(
+      average_pct_summary[2] > average_pct_summary[3] ~ "Trump",
+      average_pct_summary[2] < average_pct_summary[3] ~ "Harris",
+      TRUE ~ "Tie"  # deal with a tie
+    ),
+    winning_votes = case_when(
+      winner == "Trump" ~ votes,
+      winner == "Harris" ~ votes,
+      TRUE ~ 0
+    )
+  ) %>%
+  summarise(
+    total_trump_votes = sum(winning_votes[winner == "Trump"], na.rm = TRUE),
+    total_harris_votes = sum(winning_votes[winner == "Harris"], na.rm = TRUE)
+  )
+
+# create table of total votes
+total_votes_table <- data.frame(
+  Candidate = c("Trump", "Harris"),
+  Total_Votes = c(total_votes$total_trump_votes, total_votes$total_harris_votes)
+)
+
+knitr::kable(total_votes_table, format = "simple", col.names = c('Candidate', 'Total Votes'))
+
+```
+
+@fig-modelpctsummary produced a summary table of average support percentages for Donald Trump and Kamala Harris across various states, as well as @fig-modelvotenum predicted total vote counts based on these averages. @fig-modelpctsummary highlights significant differences in voter support by state, revealing regional dynamics as the election approaches.
+
+@fig-modelpctsummary indicates that Kamala Harris tends to have higher support in several key states, such as California, where she leads with an average of 59.98% compared to Donald Trump's 34.29%. Similarly, Maryland shows strong backing for Harris at 62.90%, while Trump receives only 32.39% of the vote. In contrast, Trump demonstrates stronger support in traditionally Republican-leaning states like Indiana, where he averages 57.90%, and Florida, with 51.53% support. The data also highlights a competitive landscape in states like Georgia and Michigan, where the candidates are closely matched; in Georgia, Harris has 47.19% compared to Trump's 48.61%, while in Michigan, Harris garners 47.84% against Trump's 46.92%. 
+
+By combining the average support percentage of each state with the electoral votes in @fig-modelpctsummary, we calculated the predicted total votes of each candidate. Each state supports a large percentage of candidates to get the total number of votes in this state, and the total number of votes refers to @stateElectoralVotes. According to these calculations, @fig-modelvotenum shows that Trump got a total of 109 votes, while Harris got 222 votes. Thus, although both of Donald Trump and Kamala Harris is not guaranteed to win 270 votes due to lack of data in certain states, Harris has obvious advantages in the election, especially with the strong support of several key states, and predicts that she may win this election.
+
+
+# Discussion {#sec-discussion}
 
 ## Overview of the Paper
 This paper presents a comprehensive analysis of polling data to forecast support for candidates Kamala Harris and Donald Trump in the upcoming U.S. presidential election. By employing a Bayesian linear regression model, the study investigates how various factors such as polling date, candidate identity, sample size, and geographic location influence voter support. The findings contribute to understanding the dynamics of electoral support and the effectiveness of polling methodologies in predicting election outcomes.
@@ -401,7 +571,7 @@ This section provides a examination of the methodology utilized by YouGov for th
 
 In summary, YouGov’s methodology for the October 2024 Texas Statewide Survey demonstrates several strengths, particularly in its diverse recruitment strategies and thorough weighting processes. However, inherent challenges associated with opt-in panels, matching techniques, and questionnaire design warrant careful consideration. By addressing these weaknesses and implementing the suggested improvements, the reliability and validity of future surveys can be enhanced, ultimately providing richer insights into voter behavior and preferences.
 
-# Appendix: Idealized Methodology and Survey {#sec-Appendix2}
+# Idealized Methodology and Survey {#sec-Appendix2}
 
 ## Objective and Overview
 This survey methodology aims to forecast the U.S. presidential election outcome by gathering representative data from a diverse cross-section of American voters. The target population includes all eligible U.S. voters, spanning a wide array of demographic backgrounds. With a budget of $100,000, this methodology employs probability sampling techniques, effective recruitment, and thorough data validation protocols to ensure data accuracy and minimize bias. By applying probability sampling, each individual has a known chance of selection, allowing the results to be statistically valid and generalizable. This design accounts for demographic, geographic, and political influences, enhancing prediction reliability [@fivethirty; @pewresearch].
@@ -674,7 +844,8 @@ If you have any further questions or would like to know more about this study, p
 As a thank you, each participant will receive a $5 reward shortly after survey completion.
 
 
-\endgroup
+
+
 
 ---
   
