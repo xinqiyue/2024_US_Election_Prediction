@@ -1,6 +1,6 @@
 ---
 title: "Predicting Electoral Outcomes: Bayesian Modeling of Voter Support Trends for Kamala Harris and Donald Trump in the 2024 Presidential Election"
-subtitle: ""
+subtitle: "Predictions shows higher likelyhood for Harris to be the Winner"
 author: 
   - Xinqi Yue
   - Yawen Tan
@@ -47,9 +47,7 @@ Our model predicts trends in voter support for the 2024 U.S. Presidential Electi
 In remainder of this paper, we structure our analysis as follows. @sec-data provides a detailed overview of the data used, including the data cleaning process, explanations of the predictor and outcome variables, as well as other variables that contribute to the model. We also present relevant data visualizations to illustrate initial trends and patterns. @sec-model focuses on the model setup and methodology, specifically detailing the Bayesian model used, its underlying assumptions, and software choices. @sec-result presents our main results, including both the model's outputs and the predictions of voter support for the key candidates. In @sec-discussion, we discuss the findings, offer insights into the broader implications, and highlight the limitations and potential directions for future research. Finally, the appendices provide additional methodological analysis, an idealized survey methodology, and supporting details for the data and model diagnostics.
 
 ## Estimand
-
-Our primary estimand is the percentage of voter support for Donald Trump and Kamala Harris on election day. We estimate this support percentage both at the national level and by state, incorporating time and state-specific effects.
-
+Our main goal is to predict who will win the election, donald trump or Kamala Harris. Specifically, we estimated the voter support rate percentage of Donald Trump and Kamala Harris on election day considering sample size, state and end date, and then calculated the total number of votes obtained by Trump and Harris through the total number of votes in each state, so as to provide a reliable prediction of the election results.
 
 
 # Data {#sec-data}
@@ -381,13 +379,11 @@ ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidat
 
 
 ```
+
 @fig-modelvisual produced predicted percentages of voter support for Donald Trump and Kamala Harris over time, as shown in the graph titled "Predicted Percentage Over Time." The y-axis represents the predicted support percentage, while the x-axis indicates polling end dates.
 @fig-modelvisual reveals distinct trends in voter support for both candidates. The predictions for Kamala Harris (shown in teal) suggest a mean support level consistently around 52% during this period, with the confidence interval shaded in gray indicating a range from approximately 49% to 55%. This stability suggests that Harris maintains a competitive edge in voter support as the election date approaches.In contrast, the predicted percentages for Donald Trump (shown in red) indicate a mean support level around 46%, with a confidence interval ranging from about 43% to 49%. This pattern highlights a slight downward trend in Trump’s predicted support, suggesting potential challenges in consolidating voter sentiment as the election draws near.
 The individual data points on the graph represent specific state polling results, with various shapes indicating different states. For example, Maine CD-1 stands out with a higher predicted support for Harris at approximately 62%, which is significantly above the national average, indicating a strong preference in this district. Conversely, states like Florida and North Carolina exhibit more competitive support levels, with both candidates’ predicted percentages clustering around 47% to 50%.The presence of a broader range of predicted support percentages in battleground states such as Georgia and Pennsylvania reflects the volatility of voter sentiment in these regions, where Trump and Harris show closely contested support. The model indicates that Harris may benefit from higher support levels in traditionally Democratic states, while Trump faces a challenge in securing sufficient backing in key swing states.
 Overall, @fig-modelvisual underscore the dynamic nature of voter preferences as the election approaches, with Harris appearing to lead in overall support while Trump must contend with fluctuating voter sentiments in critical states. These predictions provide a view of how various factors, including time and state-specific influences, shape the electoral landscape leading up to the 2024 U.S. Presidential Election.
-
-
-
 
 ## Predict Result
 ```{r}
@@ -476,20 +472,26 @@ By combining the average support percentage of each state with the electoral vot
 # Discussion {#sec-discussion}
 
 ## Overview of the Paper
-This paper presents a comprehensive analysis of polling data to forecast support for candidates Kamala Harris and Donald Trump in the upcoming U.S. presidential election. By employing a Bayesian linear regression model, the study investigates how various factors such as polling date, candidate identity, sample size, and geographic location influence voter support. The findings contribute to understanding the dynamics of electoral support and the effectiveness of polling methodologies in predicting election outcomes.
+This study employs a Bayesian modeling approach to forecast the 2024 U.S. presidential election, focusing on the candidates Kamala Harris and Donald Trump. By analyzing a comprehensive dataset of high-quality polls, the paper identifies the dynamics of voter support and how various factors—such as polling methodology, sample size, and geographic location—influence electoral outcomes. The findings indicate a greater likelihood of victory for Harris, projecting her with 222 electoral votes compared to Trump’s 109. 
 
-## Insights About the World
-One significant insight derived from this analysis is the importance of temporal dynamics in voter support. The model highlights that the timing of polling can substantially impact the reported support for candidates. This finding suggests that voters’ preferences are not static; rather, they fluctuate based on current events, campaign strategies, and media coverage. Such insights underscore the need for political strategists and candidates to consider timing when conducting polls and planning campaign efforts.
+## Findings About the World
+One finding from this analysis is the importance of temporal dynamics in voter support. The model highlights that the timing of polling can substantially impact the reported support for candidates. This finding suggests that voters’ preferences are not static; rather, they fluctuate based on current events, campaign strategies, and media coverage. This underscore the need for political strategists and candidates to consider timing when conducting polls and planning campaign efforts.
 
-Another critical takeaway is the varying levels of support for candidates across different states. The analysis reveals regional disparities in voter sentiment, indicating that geographic factors significantly influence political preferences. This highlights the importance of localized campaign strategies and targeted outreach, as what resonates in one state may not hold true in another. Understanding these regional differences can enhance candidates' ability to connect with voters and tailor their messaging effectively.
+Another finding is the diverse levels of candidate support across states. The analysis shows that voter sentiment differs by region, suggesting that geographic factors shape political preferences. This underscores the value of tailoring campaign efforts to specific areas, as messages that appeal to one state may not be as effective in another. Recognizing these regional differences allows candidates to better engage with voters and adapt their messaging to local priorities
 
 ## Limitations of the Study
-Despite its contributions, the study is not without weaknesses. One notable limitation is the reliance on existing polling data, which may introduce biases if the data collection methods are not standardized across pollsters. Variations in methodology, sample demographics, and question phrasing can lead to discrepancies in reported support levels. Additionally, the model assumes a linear relationship between predictors and outcomes, which may oversimplify the complexities of voter behavior. A more nuanced approach that incorporates non-linear effects or interactions between variables could provide deeper insights into voter dynamics.
+Despite its contributions, this study has limitations. The reliance on existing polling data introduces potential biases, as varying methodologies among pollsters can lead to discrepancies in reported support levels. Additionally, the model's assumption of a linear relationship between predictors and outcomes may oversimplify the complexities of voter behavior.
+
+Another limitation is the lack of a time series analysis. While the study captures snapshots of voter sentiment at specific moments, it does not account for how trends develop over time. This oversight may obscure patterns of voter behavior that emerge as the election date approaches. Future research should incorporate time series methodologies to better understand how public opinion evolves and to identify trends that could inform campaign strategies.
+
+Moreover, the exclusion of demographic factors such as age, income, and education could further explain variations in voter support. Incorporating these elements into future models may improve the robustness of electoral predictions.
 
 ## Future Directions
-Looking ahead, several avenues for further research emerge from this study. First, it would be valuable to explore the impact of specific events, such as debates or major news stories, on voter sentiment. Incorporating real-time data and sentiment analysis from social media could enrich the understanding of how public opinion shifts in response to external influences. Furthermore, expanding the model to include demographic factors—such as age, income, and education—could yield a more comprehensive picture of voter support and the diverse motivations behind electoral choices.
+Future research could investigate the effects of significant events, such as presidential debates or major political announcements, on voter sentiment over time. Incorporating time series analysis would allow for examination of how public opinion shifts in response to these events and help identify patterns that develop as the election date approaches.
 
-In conclusion, while this paper offers valuable insights into electoral dynamics, it also highlights the complexities of voter behavior and the need for continued exploration in this field. Future research should strive to incorporate a broader range of variables and methodologies to enhance the predictive accuracy of electoral forecasts and better inform political strategy.
+Additionally, integrating real-time social media analysis and sentiment tracking could provide a clearer view of how public opinion changes in response to external factors. Expanding the model to include demographic variables, such as age, income, and education, would enhance understanding of voter behavior and the reasons behind electoral choices.
+
+Overall, these approaches would strengthen the analysis and assist political strategists in adapting to changes in voter sentiment more effectively.
 
 \newpage
 
