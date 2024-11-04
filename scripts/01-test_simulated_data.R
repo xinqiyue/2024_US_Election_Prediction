@@ -12,6 +12,7 @@
 library(tidyverse)
 library(arrow)
 
+#import simulated data
 analysis_data <- read_parquet("data/00-simulated_data/simulated_president_polls.parquet")
 
 # Test if the data was successfully loaded
@@ -23,7 +24,6 @@ if (exists("analysis_data")) {
 
 
 #### Test data ####
-
 # Check if the dataset has 100 rows
 if (nrow(analysis_data) == 100) {
   message("Test Passed: The dataset has 100 rows.")

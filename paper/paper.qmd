@@ -27,6 +27,12 @@ library(rstanarm)
 library(ggplot2)
 library(tidyverse)
 library(arrow)
+library(janitor)
+library(lubridate)
+library(broom)
+library(modelsummary)
+library(splines)
+library(caret)
 ```
 
 ```{r}
@@ -55,10 +61,9 @@ Our main goal is to predict who will win the election, donald trump or Kamala Ha
 ## Data Overview {#sec-data-overview}
 @sec-data centers on a polling dataset for Donald Trump and Kamala Harris, filtered for quality by including only results from pollsters with a numeric grade above 2.5. Key variables such as state, end date, sample size, candidate name, and support percentage (pct) are identified. The data cleaning process standardizes column names, retains relevant fields, and addresses missing values to ensure high-quality data for analysis. The section includes a table presenting the first six entries of the cleaned analysis dataset, alongside multiple graphs: a bar graph comparing candidate support percentages by state, scatter plots illustrating trends in candidate support over time, and visualizations examining the relationship between sample size and support percentages. 
 
-The analysis utilizes FiveThirtyEight's dataset of national presidential general election polls [@fivethirtyeight]. Following the approach outlined in [@tellingstories], we aim to predict the election outcome based on this polling data. The analyses were conducted in R [@citeR], utilizing several packages to streamline the process. The tidyverse packages [@citetidyverse] were essential for data simulation and preliminary testing. Initially, the raw data was downloaded using the arrow package [@citearrow], allowing for efficient handling of large datasets. The data cleaning process employed the dplyr [@citedplyr] and tidyr [@citetidyr] packages to reshape and organize the data effectively.
+The analysis utilizes FiveThirtyEight's dataset of national presidential general election polls [@fivethirtyeight]. Following the approach outlined in [@tellingstories], we aim to predict the election outcome based on this polling data. The analyses were conducted in R [@citeR], utilizing several packages to streamline the process. The tidyverse packages [@citetidyverse] were essential for data simulation and preliminary testing. Initially, the raw data was downloaded using the arrow package [@citearrow], which facilitated efficient handling of large datasets.   
 
-Model construction involved the rstanarm [@citerstanarm] package for Bayesian regression modeling, complemented by the splines package [@citesplines] to account for non-linear relationships in the data. The results were summarized using the modelsummary [@citemodelsummary] package, while visualizations of the findings were created with the ggplot2 [@citeggplot] package, ensuring clear communication of the model's outputs.
-
+Data cleaning employed dplyr [@citedplyr], tidyr [@citetidyr], and janitor [@citejanitor] to ensure consistent data structure, particularly for renaming columns and removing inconsistencies. Date variables were managed with the lubridate package [@citelubridate], making it easier to handle time-based data accurately. For modeling, rstanarm [@citerstanarm] was used for Bayesian regression modeling, while splines [@citesplines] handled non-linear relationships, and caret [@citecaret] supported model training and validation. The modelsummary [@citemodelsummary] package was used to summarize results, and broom [@citebroom] helped tidy up model outputs. Lastly, ggplot2 [@citeggplot] generated clear visualizations, ensuring effective communication of the findings.
 
 ## Data Clean
 We clean the raw data to produce the analysis dataset using the tools listed in the @sec-data-overview, providing high-quality data for subsequent election analysis. Firstly, we standardize column names to lowercase and remove special characters. Then, we retain only the fields relevant to the election analysis, such as `state`, `end_date`, `sample_size`, `candidate_name`, and `pct` (percentage support), simplifying the data structure by removing unnecessary columns. Next, we remove rows with missing values and replace empty values in the `state` column with "National," indicating these records pertain to nationwide polls. Additionally, we convert the `end_date` column to date format, ensuring accuracy in date-based filtering. Then, we filter the data to retain only records that meet specific criteria: a `numeric_grade` of 2.5 or higher, a `candidate_name` of either "Kamala Harris" or "Donald Trump" (focusing on these two candidates' support levels), an `end_date` on or after July 21, 2024 (focusing on recent polling when Biden withdrawal from the election), and a non-empty `end_date` (filtering out records with missing dates).
@@ -79,13 +84,62 @@ knitr::kable(head_analysis_data[, 1:5], format = "simple", col.names = c('State'
 ```
 
 ## Predictors Explanation
-- **state**: The U.S. state where the poll was conducted, which allows for state-by-state analysis and comparison of support levels.
-
-- **end date**: The date the poll concluded, marking the end of data collection for that specific poll.
-
-- **sample size**: The number of respondents in the poll, indicating the scope and potential statistical reliability of the results.
+- **end date**: The date the poll concluded, marking the end of data collection for that specific poll.In the context of our analysis, we have set a criterion whereby the end dates must be greater than July 21, 2024. This threshold ensures that we are only considering the most recent and relevant polling data as we approach the 2024 election cycle.
 
 - **candidate_name**: The name of the candidate being polled, which in this data set focuses on Donald Trump and Kamala Harris.
+
+- **state**: The U.S. state where the poll was conducted, which allows for state-by-state analysis and comparison of support levels. @fig-state indicates the distribution of states.The histogram shows the distribution of polling data across different states. States like California and Georgia have high counts, indicating overrepresentation, while states such as Wyoming and South Dakota are underrepresented. 
+
+```{r}
+#| label: fig-state
+#| fig-cap: Distribution of State
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+ggplot(president_polls_cleaned_data, aes(x = state)) +
+  geom_bar(fill = "pink") +
+  labs(x = "State",
+       y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Adjust text angle for better readability
+```
+
+- **sample size**: The number of respondents in the poll, indicating the scope and potential statistical reliability of the results. @fig-samplesize shows that smaller sample sizes (0 to 500) are significantly more common, indicating a high concentration of data points in this range and these specific sizes are frequently represented in the polling data, while larger sample sizes are relatively scarce.
+```{r}
+#| label: fig-samplesize
+#| fig-cap: Distribution of Sample Size
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 6
+#| fig-height: 3
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Create a summary of counts for each sample_size
+sample_size_summary <- president_polls_cleaned_data %>%
+  group_by(sample_size) %>%
+  summarise(count = n())
+
+# Create a line plot of sample_size
+ggplot(sample_size_summary, aes(x = sample_size, y = count)) +
+  geom_line(color = "pink") +
+  geom_point(color = "lightblue") +  # Optional: add points to highlight each count
+  theme_minimal() +
+  labs(#title = "Line Plot of Sample Size Counts",
+       x = "Sample Size",
+       y = "Count") 
+#+ theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Adjust text angle for better readability
+
+
+```
+
+
 
 ## Outcome Exaplanation
 
@@ -97,12 +151,6 @@ pct is the support percentage each candidate received in the poll, which serves 
 - **pollster**: The organization that conducted the poll, providing information on who gathered the data.
   
 - **numeric grade**: A quality score assigned to the pollster, with higher values indicating greater reliability. Only pollsters with a score above 2.5 are included to enhance accuracy.
-
-- **pollscore**: A specific rating of the individual poll, reflecting additional factors that impact the poll's quality and reliability.
-
-- **methodology**: The method used by the pollster to conduct the poll, which may affect the reliability and interpretation of the results.
-
-- **transparency score**: A measure of how openly the pollster reports their methodology and results. Higher scores suggest greater transparency and reliability.
 
 ## Measurement
 The goal of this measurement is to turn individual voter opinions into a reliable estimate of electoral college outcomes by analyzing polling data. This data, sourced from @fivethirtyeight—a trusted platform known for high standards—includes only polls that meet rigorous quality criteria, ensuring broad representation of likely U.S. voters. Polls provide essential details, such as the pollster’s identity, survey dates, sample size, and methodology, covering data collection mode, demographic weighting, and adjustments to create a representative sample. These quality standards, while robust, are based on historical practices, which may overlook recent methodological shifts or emerging biases.
@@ -366,7 +414,7 @@ ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidat
   labs(
     x = "End Date",
     y = "Percentage",
-    title = "Predicted Percentage Over Time",
+    #title = "Predicted Percentage Over Time",
     color = "Candidate",
     shape = "State"
   ) +
@@ -472,7 +520,9 @@ By combining the average support percentage of each state with the electoral vot
 # Discussion {#sec-discussion}
 
 ## Overview of the Paper
-This study employs a Bayesian modeling approach to forecast the 2024 U.S. presidential election, focusing on the candidates Kamala Harris and Donald Trump. By analyzing a comprehensive dataset of high-quality polls, the paper identifies the dynamics of voter support and how various factors—such as polling methodology, sample size, and geographic location—influence electoral outcomes. The findings indicate a greater likelihood of victory for Harris, projecting her with 222 electoral votes compared to Trump’s 109. 
+This study employs a Bayesian modeling approach to forecast the 2024 U.S. presidential election, focusing on candidates Kamala Harris and Donald Trump. By analyzing a robust dataset of high-quality polls, the research investigates how factors such as polling methodology, sample size, and geographic location influence voter support. The findings indicate that Harris is projected to secure 222 electoral votes, while Trump is expected to receive 109.
+
+These results reflect broader social dynamics that shape electoral behavior. Variations in support across states suggest that regional identities and socio-political contexts significantly influence public opinion. Research indicates that diverse populations often favor candidates advocating for progressive policies, which align with issues such as racial equity, healthcare access, and economic opportunity (@pew2020). Conversely, more conservative regions tend to support traditional Republican platforms, reflecting local values and priorities (@brookings2020). 
 
 ## Findings About the World
 One finding from this analysis is the importance of temporal dynamics in voter support. The model highlights that the timing of polling can substantially impact the reported support for candidates. This finding suggests that voters’ preferences are not static; rather, they fluctuate based on current events, campaign strategies, and media coverage. This underscore the need for political strategists and candidates to consider timing when conducting polls and planning campaign efforts.
@@ -573,7 +623,7 @@ In summary, YouGov’s methodology for the October 2024 Texas Statewide Survey d
 # Idealized Methodology and Survey {#sec-Appendix2}
 
 ## Objective and Overview
-This survey methodology aims to forecast the U.S. presidential election outcome by gathering representative data from a diverse cross-section of American voters. The target population includes all eligible U.S. voters, spanning a wide array of demographic backgrounds. With a budget of $100,000, this methodology employs probability sampling techniques, effective recruitment, and thorough data validation protocols to ensure data accuracy and minimize bias. By applying probability sampling, each individual has a known chance of selection, allowing the results to be statistically valid and generalizable. This design accounts for demographic, geographic, and political influences, enhancing prediction reliability [@fivethirty; @pewresearch].
+This survey methodology aims to forecast the U.S. presidential election outcome by gathering representative data from a diverse cross-section of American voters. The target population includes all eligible U.S. voters, spanning a wide array of demographic backgrounds. With a budget of $100,000, this methodology employs probability sampling techniques, effective recruitment, and thorough data validation protocols to ensure data accuracy and minimize bias. By applying probability sampling, each individual has a known chance of selection, allowing the results to be statistically valid and generalizable. This design accounts for demographic, geographic, and political influences, enhancing prediction reliability [@fivethirtyeight; @pewresearch].
 
 ### Core Objectives
 - **Representative Sampling**: Achieve a sample reflecting U.S. voting demographics, ensuring insights are applicable to the entire electorate.
@@ -853,25 +903,68 @@ As a thank you, each participant will receive a $5 reward shortly after survey c
 - **Pilot Testing**: A pre-deployment pilot will refine the question flow, ensuring clarity and ease for respondents.
 
 \newpage
-
-# Additional data details
-
 # Model details {#sec-model-details}
 
 ## Posterior predictive check
 
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-ppcheck
+#| fig-width: 6
+#| fig-height: 4
+#| fig-cap: "Posterior Predictive Check of Bayesian Models"
 
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
+# Load the model using the here function to specify the path
+model_bayes <- readRDS("../models/election_glm_model.rds")
+# Perform posterior predictive check
+pp_check(model_bayes)
+```
 
+@fig-ppcheck presents a posterior predictive check (PPC) for Bayesian model, illustrating the relationship between the observed data and the data replicated by the model. On the x-axis, the values of the response variable are depicted, while the y-axis indicates the density or probability of those values. The dark blue curve represents the observed data, denoted as $y$, and is contrasted with multiple light blue curves that signify the model's replicated data, referred to as $y_rep$. 
+The close overlap between the dark blue curve and the cluster of light blue curves suggests that the model fits the observed data well, indicating its ability to replicate the distribution of the data accurately. Additionally, the variability among the light blue curves highlights the uncertainty in the model's predictions; if these curves were excessively dispersed or showed minimal overlap with the observed data, it would signal potential issues with the model's fit. 
 
 ## Diagnostics
+### R-hat Plots
 
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
+$\hat{R}$ is a diagnostic measure that compares the variance within each chain to the variance between chains. @fig-rhat presents the R-hat values for Bayesian model, which serves as a diagnostic indicator for evaluating the convergence of Markov Chain Monte Carlo (MCMC) chains. The x-axis indicates the R-hat statistic, reflecting the convergence status of each parameter in the model, while the y-axis lacks a specific scale and displays various R-hat values along a vertical line. Each point represents the R-hat value for a different parameter, and their clustering around 1.00 suggests effective convergence.
+Additionally, @fig-rhat includes interpretation thresholds for R-hat values: values at or below 1.05 signify satisfactory convergence, while values up to 1.1 may indicate some potential convergence issues but are generally considered acceptable. In contrast, values exceeding 1.1 suggest poor convergence, indicating that further iterations may be necessary to obtain stable estimates. Since most of the R-hat values in @fig-rhat are well below 1.05, we can infer that the Bayesian model that we construnct is likely well-fitted and does not raise significant concerns regarding the convergence of the MCMC process.
 
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-rhat
+#| fig-cap: "R-hat Plots of Bayesian Model"
+#| fig-width: 6
+#| fig-height: 4
+
+plot(model_bayes, "rhat")
+
+```
+
+### Trace Plots
+
+Trace plot of  Bayesian model illustrates the sampled values of various parameters across multiple iterations of the Markov Chain Monte Carlo (MCMC) process, and discusses the convergence of the MCMC chains. Organized in a grid format, each row represents a different parameter, while each column corresponds to a specific MCMC chain. The x-axis indicates the iteration number of the MCMC sampling, and the y-axis shows the values of the parameters being sampled, with different colors or line styles potentially representing various MCMC chains. Ideally, the sampled values should fluctuate around a stable mean, indicating effective convergence. Conversely, if any parameter shows a lack of mixing or clear trends, such as drifting over time, it may indicate convergence issues, necessitating additional iterations or adjustments to improve the model. 
+
+@fig-trace presents a trace plot for the Bayesian model which consider different states, variable end date, variable sample size and variable candidate name. We can see that there is no clear separation between the chains and sampled values fluctuate around the stable mean, suggesting the MCMC sampling has successfully converged for most parameters. 
 
 
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-trace
+#| fig-cap: "Trace Plot of Bayesian Model"
+#| warning: false
+#| fig-width: 12
+#| fig-height: 12
+
+plot(model_bayes, "trace")
+```
 
 \newpage
 

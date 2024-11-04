@@ -12,18 +12,17 @@ library(tidyverse)
 library(testthat)
 library(arrow)
 
+#import analysis data
 analysis_data <- read_parquet("data/02-analysis_data/president_polls_cleaned_data.parquet")
 
 
 #### Test data ####
-
 # Check if the dataset has 5 columns
 if (ncol(analysis_data) == 5) {
   message("Test Passed: The dataset has 5 columns.")
 } else {
   stop("Test Failed: The dataset does not have 5 columns.")
 }
-
 
 # Check if the 'state' column contains only valid Australian state names
 valid_states <- c("National", "Arizona", "California", "Georgia", "North Carolina", 

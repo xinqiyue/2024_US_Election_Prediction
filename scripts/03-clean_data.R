@@ -14,33 +14,30 @@ library(tidyr)
 library(arrow)
 
 #### Clean data ####
-president_polls_raw_data <- read_parquet('data/01-raw_data/president_polls.parquet')
+president_polls_raw_data <- read_parquet('data/01-raw_data/president_polls.parquet') # import raw data
 
-# filter out high quality polls（numeric_grade >= 2.5)
 president_polls_filtered <- president_polls_raw_data %>% 
-  janitor::clean_names() %>%
-  select(# pollscore, methodology, transparency_score, start_date, population, population_full, hypothetical, answer, pollster,
+  janitor::clean_names() %>% # correct name to standard form
+  select( # only keep needed columns
     numeric_grade,
     state, 
     end_date, 
     sample_size,
     candidate_name, 
     pct) %>%
-  tidyr::drop_na()
+  tidyr::drop_na() # eliminate date that is null
 
 president_polls_cleaned_data <- president_polls_filtered %>%
   mutate(
-    # hypothetical = ifelse(hypothetical == 'true', 1, 0),start_date = mdy(start_date),
     state = if_else(is.na(state) | state == "", "National", state), 
     end_date = mdy(end_date),
-    # num_candidates = round((pct / 100) * sample_size, 0)
 ) %>%
-  filter(numeric_grade >= 2.5
-         , candidate_name %in% c("Kamala Harris", "Donald Trump")
-         , end_date >= as.Date("2024-07-21")
+  filter(numeric_grade >= 2.5 # filter out high quality polls（numeric_grade >= 2.5)
+         , candidate_name %in% c("Kamala Harris", "Donald Trump") # filter out data of Kamala Harris and Donald Trump
+         , end_date >= as.Date("2024-07-21") # filter out data after byden was out
          , !is.na(end_date)  # eliminate date that is null
 ) %>%
-  select(# pollscore, methodology, transparency_score, start_date, population, population_full, hypothetical, answer, pollster,
+  select( # only keep needed columns
     state, 
     end_date, 
     sample_size,
