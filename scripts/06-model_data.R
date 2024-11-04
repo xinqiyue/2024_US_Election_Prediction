@@ -5,6 +5,7 @@ library(lubridate)
 library(broom)
 library(modelsummary)
 library(rstanarm)
+library(arrow)
 library(splines)
 library(caret)
 
@@ -106,10 +107,26 @@ prediction_results <- data.frame(
   predicted_pct = c(mean_predictions_new[1:length(state_names)], mean_predictions_new[(length(state_names)+1):(2*length(state_names))])
 )
 
+# Assuming you have already run the previous code up to the predictions_new part
+
+# Create a dataframe for the predictions with specific columns
+prediction_summary <- data.frame(
+  state = rep(state_names, each = 2),  # Repeat state names for each candidate
+  candidate_name = rep(levels(new_data$candidate_name), times = length(state_names)),
+  predicted_pct = c(mean_predictions_new[1:length(state_names)], 
+                    mean_predictions_new[(length(state_names) + 1):(2 * length(state_names))])
+)
+
+final_results <- prediction_summary |> 
+  select(state, candidate_name, predicted_pct) |>  # Select relevant columns
+  pivot_wider(names_from = candidate_name, values_from = predicted_pct, 
+              names_prefix = "predicted_pct_of_")  # Pivot to wide format
+
+
+
 summary(model_bayes)
 pp_check(model_bayes)
 
 
 # Save model for future use
 saveRDS(model_bayes, "models/election_glm_model.rds")
-

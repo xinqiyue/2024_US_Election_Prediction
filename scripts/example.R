@@ -17,7 +17,8 @@ data <- read_csv("data/01-raw_data/president_polls.csv") |>
 # Filter data to Harris estimates based on high-quality polls after she declared
 just_harris_high_quality <- data |>
   filter(
-    candidate_name == "Kamala Harris",
+    candidate_name %in% c("Kamala Harris", "Donald Trump"),
+    #candidate_name == "Kamala Harris",
     numeric_grade >= 2.7 # Need to investigate this choice - come back and fix. 
     # Also need to look at whether the pollster has multiple polls or just one or two - filter out later
   ) |>
@@ -65,7 +66,7 @@ base_plot +
 
 #### Starter models ####
 # Model 1: pct as a function of end_date
-model_date <- lm(pct ~ end_date, data = just_harris_high_quality)
+model_date <- lm(pct ~ end_date + candidate_name, data = just_harris_high_quality)
 
 # Model 2: pct as a function of end_date and pollster
 model_date_pollster <- lm(pct ~ end_date + pollster, data = just_harris_high_quality)
@@ -79,11 +80,19 @@ just_harris_high_quality <- just_harris_high_quality |>
 
 # Plot model predictions
 # Model 1
+ggplot(just_harris_high_quality, aes(x = end_date, color = candidate_name), color = candidate_name) +
+  geom_point(aes(y = pct, color = candidate_name), color = candidate_name) +
+  geom_line(aes(y = fitted_date), color = 'pink', linetype = "dotted") +
+  theme_classic() +
+  labs(y = "Harris percent", x = "Date", title = "Linear Model: pct ~ end_date")
+
+
 ggplot(just_harris_high_quality, aes(x = end_date)) +
   geom_point(aes(y = pct), color = "black") +
   geom_line(aes(y = fitted_date), color = "blue", linetype = "dotted") +
+  facet_wrap(vars(candidate_name)) +
   theme_classic() +
-  labs(y = "Harris percent", x = "Date", title = "Linear Model: pct ~ end_date")
+  labs(y = "Harris percent", x = "Date", title = "Linear Model: pct ~ end_date + pollster")
 
 # Model 2
 ggplot(just_harris_high_quality, aes(x = end_date)) +

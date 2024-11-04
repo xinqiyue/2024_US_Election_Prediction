@@ -153,22 +153,6 @@ ggplot(data = president_polls_cleaned_data, aes(x = state, y = pct, fill = candi
 ### Exploring the Relationship Between End Date and PCT
 
 ```{r}
-#| echo: false
-#| warning: false
-#| message: false
-base_plot <- ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
-  theme_classic() +
-  labs(y = "Candidate Support (%)", x = "Date") 
-#+  scale_x_date(date_labels = "%b %Y")  # 设置 x 轴只显示月份和年份
-
-# 绘制候选人支持率的点图和光滑线
-base_plot + 
-  geom_point() + 
-  geom_smooth(se = FALSE) + 
-  theme(legend.position = "bottom")
-```
-
-```{r}
 #| label: fig-pct-time
 #| fig-cap: Trends in Candidate Support Over Time
 #| echo: false
@@ -179,14 +163,15 @@ base_plot +
 library(ggplot2)
 
 ggplot(data = president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name, group = candidate_name)) +
-  geom_line(size = 1,alpha = 0.5) + 
+  #geom_line(size = 1,alpha = 0.5) + 
   geom_point(size = 1) + # Add data point
+  geom_smooth(se = FALSE) + 
   scale_color_manual(values = c("Donald Trump" = "pink", "Kamala Harris" = "lightblue")) + 
   labs(x = "State",
        y = "Support Percentage (%)") + # Add X-axis and Y-axis
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "bottom")
 ```
 
 
@@ -195,7 +180,9 @@ In this analysis, we use a Bayesian linear regression model to estimate the perc
 
 ## Model set-up
 
-In this Bayesian framework, we assume a normal distribution for poll results influenced by several predictors: end date, candidate name, sample size, and state. We denote $y_i$ as the percentage of votes for a candidate in a given poll, where $beta_i$ represents the candidate effect, $gamma_i$ reflects the influence of sample size, and $delta_i$ corresponds to the state effect.
+## Model set-up
+
+In this Bayesian framework, support level are modeled as normally distributed and influenced by several predictors: end date, candidate name, sample size, and state. The variable $y_i$ denotes the percentage of votes for a candidate in a specific poll, with $\beta_i$ representing the candidate effect, $\gamma_i$ reflecting the influence of sample size, and $\delta_i$ corresponding to the state effect. The intercept $\alpha$ indicates the baseline poll result, while each $\beta_i$ coefficient quantifies the influence of its associated predictor on the vote percentage. Additionally, the variable $\text{state}_j$ captures the effects attributed to different states, and $\text{end\_date}_{i}$ models temporal trends.
 
 The model can be mathematically expressed as follows:
 
@@ -208,17 +195,11 @@ y_i | \mu_i, \sigma &\sim \text{Normal}(\mu_i, \sigma) \\
 \sigma &\sim \text{Exponential}(1)
 \end{align}
 
-In this setup, the intercept $\alpha$ represents the baseline poll result, while each $\beta$ coefficient captures the specific influence of its associated predictor on the vote percentage. The variable $\text{state}_j$ accounts for effects attributed to different states, while $\text{end\_date}_{i}$ models temporal trends.
+Priors are defined as follows. For the intercept, a `Normal(50, 10)` distribution is utilized, reflecting a belief that the baseline support percentage is centered around 50% with moderate variability. This choice indicates a moderately informative prior that captures plausible ranges for the intercept. Each regression coefficient is assigned a `Normal(0, 2.5)` prior, which is weakly informative, allowing flexibility in parameter estimation while minimizing bias. These priors are selected to strike a balance between allowing the data to inform estimates and providing regularization to prevent extreme values and overfitting. The chosen priors are grounded in reasonable expectations regarding support ranges, aiming to enhance the robustness of the model.
 
-Priors are defined as follows: $alpha$ follows a normal distribution with a mean of 50 and a standard deviation of 10. Each of the $\beta$ and $\gamma$ parameters has a normal prior centered at 0 with a standard deviation of 2.5, indicating a mild assumption about their potential effects without introducing bias. The noise parameter $\sigma$ adheres to an exponential distribution, facilitating flexibility in the unexplained variation.
+Then, the complete model, summarizing the components, can be expressed as:
 
-We run the model using the @citeR package of @rstanarm, focusing on how the vote percentage varies based on the predictors.
-
-The complete model, summarizing the components, can be expressed as:
-
-$$y_i \sim \text{Normal}\left(\beta_0 + \beta_1 \cdot \text{end\_date}_i + \sum_{k=1}^{K} \gamma_k B_k(\text{state}_j), \sigma^2\right)$$
-
-In this expression, $y_i$ represents the predicted vote percentage for observation $i$, modeled as a function of the predictors, where the mean $\mu_i$ captures the expected percentage, and $\sigma$ reflects the variability.
+$$y_i \sim \text{Normal}\left(\alpha + \beta_1 \cdot \text{end\_date}_i + \beta_2 \cdot \text{candidate\_name}_i + \beta_3 \cdot \text{sample\_size}_i + \sum_{j=1}^{M} \gamma_j \cdot \text{state}_j, \sigma^2\right)$$
 
 To further clarify the model:
 
@@ -230,21 +211,11 @@ The prior distributions are:
 - **Formula (5)** outlines the priors for $\gamma_k$, which are normal distributions centered at 0 with variance $2.5^2$, reflecting the belief in potentially small effects from state variables.
 - **Formula (6)** assigns an exponential distribution to the standard deviation $\sigma$, suggesting that smaller variance is more likely while allowing for broader variations.
 
-
-## Bayesian Priors
-
-For Bayesian inference, we apply the following prior distributions:
-
-- **Intercept prior**: A `Normal(50, 10)` prior is used for the intercept, reflecting a moderately informative belief that baseline support percentage falls within the plausible range (centered around 50% with a moderate spread).
-- **Coefficients prior**: A `Normal(0, 2.5)` prior is assigned to each regression coefficient, which is weakly informative and allows flexibility without over-restricting the influence of predictors.
-
-These priors are selected to strike a balance between allowing the data to inform estimates while providing regularization to prevent extreme parameter values. The priors are justified based on general expectations of support ranges and aim to avoid overfitting.
-
-## Assumptions and Limitations
+## Assumptions of the Bayesian Models
 
 1. **Linearity**: The model assumes a linear relationship between independent variables (predictors) and the dependent variable (outcome, `pct`). The expected outcome is represented as a linear combination of the predictors. Nonlinear effects, if present, may not be fully captured, potentially affecting the model's fit.
 
-2. **Normality of Errors**: It is assumed that the residuals (the differences between observed and predicted values) follow a normal distribution. This assumption is crucial for making valid inferences; violations can lead to incorrect conclusions and unreliable credible intervals.
+2. **Normality of Errors**: It is assumed that the residuals (the differences between observed and predicted values) follow a normal distribution. This assumption is crucial for making valid inferences; violations can lead to incorrect conclusions and unreliable credible intervals. Diagnostic checks and posterior predictive checks are used to assess model fit and adherence to assumptions.
 
 3. **Homoscedasticity**: The variance of the residuals is expected to be constant across all combinations of the predictors. If residuals display heteroscedasticity (non-constant variance), it can result in inefficient estimates and biased interpretations of the modeled relationships.
 
@@ -255,9 +226,6 @@ These priors are selected to strike a balance between allowing the data to infor
 6. **Prior Distributions**: Bayesian regression requires the specification of prior distributions for the model parameters (coefficients). The selection of these priors is significant, as they can impact the resulting posterior distributions, particularly when data is limited.
 
 7. **Parameter Estimation**: In Bayesian linear regression, parameters are estimated using a posterior distribution derived from both the likelihood of the observed data and the prior distributions. This framework allows for uncertainty quantification and more flexible inference.
-
-8. **Error Distribution**: The model presumes normally distributed residuals. Any deviation from this assumption may influence the validity of the inference. Diagnostic checks and posterior predictive checks are used to assess model fit and adherence to assumptions.
-
 
 ## Software and Validation
 
