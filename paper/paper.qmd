@@ -81,6 +81,37 @@ The dataset encompasses polling data focused on two candidates, Donald Trump and
 
 The analysis utilizes FiveThirtyEight's dataset of national presidential general election polls [@fivethirtyeight]. Following the approach outlined in [@tellingstories], we aim to predict the election outcome based on this polling data. The analyses were conducted in R @citeR, with support from several packages. The `tidyverse` packages [@citetidyverse] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], data cleaning process was done by using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], and `arrow` package [@citearrow]. Then, models were constructed using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], `rstanarm` [@citerstanarm] package, and `splines` package [@citesplines]. The model results are then presented by `modelsummary` [@citemodelsummary] package, and graphs were made with `ggplot2` package [@citeggplot].
 
+```{r}
+#| label: fig-all-obs
+#| tbl-cap: Support Rates of Donald Trump and Kamala Harris by State
+#| echo: false
+#| warning: false
+#| message: false
+state_support_rates <- president_polls_cleaned_data %>%
+  group_by(state, candidate_name) %>%
+  summarise(avg_pct = mean(pct, na.rm = TRUE)) %>%
+  ungroup()
+
+# Correlation analysis
+ggplot(state_support_rates, aes(x = state, y = avg_pct, fill = candidate_name)) +
+  geom_bar(stat = "identity", position = "dodge", width = ) +
+  labs(title = "Support Rates of Donald Trump and Kamala Harris by State",
+       y = "Average Support Rate (%)",
+       x = "State") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
+  geom_point(size = 0.5) +
+  facet_wrap(~ state, scales = "free_y") +
+  labs(title = "Support Rates of Donald Trump and Kamala Harris by State",
+       y = "Support Rate (%)",
+       x = "Date",
+       color = "Candidate") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
 ## Data Clean
 We clean the raw data to produce the analysis dataset using the tools listed in the @sec-data-overview, providing high-quality data for subsequent election analysis. Firstly, we standardize column names to lowercase and remove special characters. Then, we retain only the fields relevant to the election analysis, such as `state`, `end_date`, `sample_size`, `candidate_name`, and `pct` (percentage support), simplifying the data structure by removing unnecessary columns. Next, we remove rows with missing values and replace empty values in the `state` column with "National," indicating these records pertain to nationwide polls. Additionally, we convert the `end_date` column to date format, ensuring accuracy in date-based filtering. Then, we filter the data to retain only records that meet specific criteria: a `numeric_grade` of 2.5 or higher, a `candidate_name` of either "Kamala Harris" or "Donald Trump" (focusing on these two candidates' support levels), an `end_date` on or after July 21, 2024 (focusing on recent polling when Biden withdrawal from the election), and a non-empty `end_date` (filtering out records with missing dates).
 
@@ -440,24 +471,208 @@ The survey will be conducted through **Google Forms**, providing an accessible, 
 
 ### Survey Structure
 
-\begingroup
-\small
+**Title:**
+  
+  2024 U.S. Presidential Election Forecast Survey
 
-**Introduction**: Thank you for participating in our survey to forecast the 2024 U.S. Presidential election outcome. Your responses will remain confidential, and participation is voluntary.
+**Introduction:**
+  
+  We appreciate your participation in this survey, which aims to forecast the outcome of the 2024 U.S. Presidential election. Your responses are essential for our research.
 
-**Section 1: Eligibility Screening**:
-  - U.S. citizenship and voter eligibility questions.
+**Please note:**
+  
+  - Your answers will be treated with complete confidentiality.
 
-**Section 2: Demographics**:
-  - Questions on age, gender, race, education, income, and region.
+- Participation in this survey is voluntary.
 
-**Section 3: Political Views and Voting Intentions**:
-  - Likelihood of voting, party affiliation, candidate choice, and issue importance.
+- We encourage you to provide honest and thoughtful responses.
 
-**Section 4: Engagement and Information Sources**:
-  - Questions about primary news sources and engagement with election coverage.
+- The survey is estimated to take about 5 minutes to complete.
 
-**End Message**: Thank you for your time. For survey inquiries, please contact [duanyi.su@mail.utoronto.ca](mailto:duanyi.su@mail.utoronto.ca).
+- If you have any questions or concerns, feel free to reach out to our research team at [duanyi.su@mail.utoronto.ca](duanyi.su@mail.utoronto.ca) (Xinqi Yue, Yawen Tan, Duanyi Su).
+
+Thank you for your valuable contribution! As a token of our appreciation, each participant will receive $5 upon completion of the survey.
+
+**Section 1: About Eligibility**
+  
+  Are you a U.S. citizen?
+  
+  - Yes
+
+- No (Please end Survey)
+
+Do you meet your state’s residency requirements?
+  
+  - Yes
+
+- No (Please end Survey)
+
+Will you be 18 years old  or elder by the Election Day?
+  
+  - Yes
+
+- No (Please end Survey)
+
+Are you registered to vote by the voter registration deadline. (North Dakota does not require voter registration.)
+
+- Yes
+
+- No
+
+- Wish to register later
+
+**Section 2: About Demographics**
+
+The following questions will help us understand the background characteristics of our respondents.
+
+Which age group do you belong to?
+
+- 18-29
+
+- 30-44
+
+- 45-64
+
+- 65 or older
+
+What is your gender?
+- Male
+
+- Female
+
+- Prefer not to say
+
+- Other
+
+What is your race or ethnicity? Please select all that apply.
+- White
+
+- Black or African American
+
+- Hispanic or Latino
+
+- Asian
+
+- Native American or Alaska Native
+
+- Native Hawaiian or Other Pacific Islander
+
+- Prefer not to say
+
+- Other
+
+Which U.S. state do you currently live in?
+
+[answer box]
+
+What region do you live in within your state?
+
+- Rural
+
+- Suburban
+
+- Urban
+
+- Prefer not to say
+
+What is your political affiliation?
+
+- Democratic
+
+- Republican
+
+- Independent
+
+- Libertarian
+
+- Green Party
+
+- Prefer not to say
+
+- Other
+
+**Section 3: Voting Behavior and Intentions**
+
+These questions focus on voting registration and plans for the upcoming election.
+
+How likely is it that you will vote in the 2024 U.S. Presidential Election?
+
+- Very likely
+
+- Somewhat likely
+
+- Somewhat unlikely
+
+- Very unlikely
+
+If the election were held today, which candidate would you most likely vote for?
+
+- Donald Trump
+
+- Kamala Harris
+
+- Not sure
+
+- Prefer not to say
+
+- Other
+
+How confident are you that your choice would remain the same by Election Day?
+
+- Not at all confident
+
+- Slightly confident
+
+- Moderately confident
+
+- Very confident
+
+- Completely confident
+
+**Section 4: Engagement with the Election**
+
+This section aims to understand how actively our respondents follow and discuss the election.
+
+How closely do you follow news and updates related to the 2024 U.S. Presidential Election?
+
+- Very closely
+
+- Somewhat closely
+
+- Not very closely
+
+- Not at all
+
+How often do you discuss the 2024 U.S. Presidential Election with friends, family, or colleagues?
+
+- Daily
+
+- Weekly
+
+- Occasionally
+
+- Rarely
+
+- Never
+
+**Section 5: Additional Insights**
+
+We appreciate any additional thoughts our respondents may have on the upcoming election.
+
+Do you have any further comments or insights about the factors that might affect the 2024 U.S. Presidential Election? (optional)
+
+[Answer box]
+
+**End Message:**
+
+Thank You for Completing the Survey!
+
+We appreciate your time and thoughtful responses. Your participation is invaluable in helping us gather insights for our research on the 2024 U.S. Presidential Election forecast. Your answers will contribute to a more comprehensive understanding of voter trends and factors influencing this election.
+
+If you have any further questions or would like to know more about this study, please feel free to reach out to our research team at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca).
+
+As a thank you, each participant will receive a $5 reward shortly after survey completion.
+
 
 \endgroup
 
@@ -468,6 +683,7 @@ The survey will be conducted through **Google Forms**, providing an accessible, 
 - **Pilot Testing**: A pre-deployment pilot will refine the question flow, ensuring clarity and ease for respondents.
 
 \newpage
+
 # Additional data details
 
 # Model details {#sec-model-details}
