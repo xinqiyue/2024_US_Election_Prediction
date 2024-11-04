@@ -1,5 +1,5 @@
 # Predicting Electoral Outcomes: Bayesian Modeling of Voter Support Trends for Kamala Harris and Donald Trump in the 2024 Presidential Election"
-##Predictions shows higher likelyhood for Harris to be the Winner
+## Predictions shows higher likelyhood for Harris to be the Winner
 
 ## Overview
 This study examines the dynamics of voter support for the 2024 U.S. Presidential Election, focusing on candidates Kamala Harris and Donald Trump. Given the heightened public interest and the complexities of polling data, we adopt a "poll-of-polls" methodology, aggregating high-quality national and state polls to forecast candidate support. By utilizing Bayesian modeling, this analysis captures both the temporal dynamics and state-specific trends influencing voter behavior.
