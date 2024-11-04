@@ -1,3 +1,12 @@
+#### Preamble ####
+# Purpose: Test cleaaned data to ensure validity
+# Author: Xinqi Yue
+# Date: 3 Nov 2024
+# Contact: xinqi.yue@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: download and clean data first
+# Any other information needed? Need to have analysis data/ cleaned data
+
 #### Workspace setup ####
 library(tidyverse)
 library(testthat)

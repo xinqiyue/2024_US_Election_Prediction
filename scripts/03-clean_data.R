@@ -4,8 +4,8 @@
 # Date: 3 Nov 2024
 # Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
-# Any other information needed?
+# Pre-requisites: Null
+# Any other information needed? Null
 
 #### Workspace setup ####
 library(tidyverse)

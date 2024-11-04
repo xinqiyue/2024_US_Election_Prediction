@@ -1,13 +1,11 @@
 #### Preamble ####
-# Purpose: Simulates a dataset of Australian electoral divisions, including the 
-  #state and party that won each division.
-# Author: Rohan Alexander
-# Date: 26 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Purpose: simulate data to give first idea
+# Author: Xinqi Yue
+# Date: 3 Nov 2024
+# Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: The `tidyverse` package must be installed
-# Any other information needed? Make sure you are in the `starter_folder` rproj
-
+# Pre-requisites: Null
+# Any other information needed? Null
 
 #### Workspace setup ####
 library(tidyverse)

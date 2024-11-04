@@ -1,12 +1,11 @@
 #### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Create exploratory data analysis
+# Author: Xinqi Yue
+# Date: 3 Nov 2024
+# Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
-
+# Pre-requisites: download, clean and test data first
+# Any other information needed? Need to have analysis data
 
 #### Workspace setup ####
 library(tidyverse)
@@ -20,11 +19,10 @@ library(ggcorrplot)
 #### Read data ####
 analysis_data <- read_csv("data/analysis_data/analysis_data.csv")
 
-# 读取清理后的数据
+# read from cleaned data
 president_polls_cleaned_data <- read.csv('../data/02-analysis_data/president_polls_cleaned_data.csv')
 
-# 描述性统计
-#summary_stats <- 
+# summarise data
 president_polls_cleaned_data %>%
   summarise(
     avg_pct = mean(pct, na.rm = TRUE),
@@ -33,31 +31,27 @@ president_polls_cleaned_data %>%
     max_pct = max(pct, na.rm = TRUE),
     sd_pct = sd(pct, na.rm = TRUE)
   )
-#print(summary_stats)
 
-# 可视化候选人支持率分布
+# Visualize the distribution of candidate support
 ggplot(president_polls_cleaned_data, aes(x = candidate_name, y = pct, fill = candidate_name)) +
   geom_boxplot() +
   labs(title = "Candidate Support Rate Distribution", y = "Support Rate (%)", x = "Candidate") +
   theme_minimal()
 
-# 时间序列分析
+# Time Series Analysis
 ggplot(president_polls_cleaned_data, aes(x = as.Date(end_date), y = pct, color = candidate_name)) +
   geom_line() +
   labs(title = "Support Rate Trend Over Time", y = "Support Rate (%)", x = "Date") +
   theme_minimal()
 
-# 相关性分析
-#correlation_matrix <- 
 cor(president_polls_cleaned_data %>% select(pct, sample_size), use = "complete.obs")
-#print(correlation_matrix)
 
 state_support_rates <- president_polls_cleaned_data %>%
   group_by(state, candidate_name) %>%
   summarise(avg_pct = mean(pct, na.rm = TRUE)) %>%
   ungroup()
 
-# 可视化支持率
+# Correlation analysis
 ggplot(state_support_rates, aes(x = state, y = avg_pct, fill = candidate_name)) +
   geom_bar(stat = "identity", position = "dodge", width = ) +
   labs(title = "Support Rates of Donald Trump and Kamala Harris by State",
@@ -67,12 +61,11 @@ ggplot(state_support_rates, aes(x = state, y = avg_pct, fill = candidate_name)) 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggplot(president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name)) +
-  geom_point(size = 0.5) +  # 绘制散点
-  facet_wrap(~ state, scales = "free_y") +  # 每个州分面显示，y轴自由
+  geom_point(size = 0.5) +
+  facet_wrap(~ state, scales = "free_y") +
   labs(title = "Support Rates of Donald Trump and Kamala Harris by State",
        y = "Support Rate (%)",
        x = "Date",
        color = "Candidate") +
-  theme_minimal() +  # 使用简洁主题
-  theme(legend.position = "bottom")  # 图例在底部
-# 在此部分添加关于数据的初步观察和发现的总结
+  theme_minimal() +
+  theme(legend.position = "bottom")

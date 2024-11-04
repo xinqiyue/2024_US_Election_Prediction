@@ -1,3 +1,12 @@
+#### Preamble ####
+# Purpose: Downloads and saves the data from 
+# Author: Xinqi Yue
+# Date: 3 Nov 2024
+# Contact: xinqi.yue@mail.utoronto.ca
+# License: MIT
+# Pre-requisites: 
+# Any other information needed?
+
 #### Workspace setup ####
 library(tidyverse)
 library(janitor)
