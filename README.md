@@ -22,4 +22,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, ChatGPT_4o. The title, abstract, readme file and Appendix A were written with the help of ChatGPT_4o and the entire chat history is available in inputs/llms/usage.txt.
+Aspects of the code were written with the help of ChatGPT_4o. The title, abstract, readme file and Appendix A were written with the help of ChatGPT_4o and the entire chat history is available in inputs/llms/usage.txt.
