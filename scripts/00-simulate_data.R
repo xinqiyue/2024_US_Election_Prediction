@@ -10,6 +10,7 @@
 #### Workspace setup ####
 library(tidyverse)
 library(dplyr)
+library(arrow)
 set.seed(666)
 
 #### Simulate data ####
@@ -48,4 +49,4 @@ simulated_president_polls <- data.frame(
 )
 
 #### Save data ####
-write.csv(simulated_president_polls, "data/00-simulated_data/simulated_president_polls.csv")
+write_parquet(simulated_president_polls, "data/00-simulated_data/simulated_president_polls.parquet")

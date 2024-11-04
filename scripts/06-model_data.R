@@ -1,11 +1,11 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from 
+# Purpose: Create predictive Bayesian Modeling
 # Author: Xinqi Yue
 # Date: 3 Nov 2024
 # Contact: xinqi.yue@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
-# Any other information needed?
+# Pre-requisites: Null
+# Any other information needed? Null
 
 #### Workspace setup ####
 library(tidyverse)
@@ -106,12 +106,12 @@ predictions_new <- posterior_predict(model_bayes, newdata = new_data)
 # Calculate mean predictions for new data
 mean_predictions_new <- colMeans(predictions_new)
 
-# 创建一个数据框，包含州、候选人名称和对应的平均预测值
+# Create a data frame containing the states, candidate names, and corresponding average predictions
 state_names <- levels(new_data$state)
 
-# 准备结果数据框
+# Prepare the result dataframe
 prediction_results <- data.frame(
-  state = rep(state_names, each = 2),  # 每个州两次，分别对应两个候选人
+  state = rep(state_names, each = 2),  # Twice in each state, one for each candidate
   candidate_name = rep(levels(new_data$candidate_name), times = length(state_names)),
   predicted_pct = c(mean_predictions_new[1:length(state_names)], mean_predictions_new[(length(state_names)+1):(2*length(state_names))])
 )
@@ -131,11 +131,8 @@ final_results <- prediction_summary |>
   pivot_wider(names_from = candidate_name, values_from = predicted_pct, 
               names_prefix = "predicted_pct_of_")  # Pivot to wide format
 
-
-
 summary(model_bayes)
 pp_check(model_bayes)
-
 
 # Save model for future use
 saveRDS(model_bayes, "models/election_glm_model.rds")

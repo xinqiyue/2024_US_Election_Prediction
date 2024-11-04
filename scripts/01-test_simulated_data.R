@@ -10,8 +10,9 @@
 
 #### Workspace setup ####
 library(tidyverse)
+library(arrow)
 
-analysis_data <- read_csv("data/00-simulated_data/simulated_president_polls.csv")
+analysis_data <- read_parquet("data/00-simulated_data/simulated_president_polls.parquet")
 
 # Test if the data was successfully loaded
 if (exists("analysis_data")) {

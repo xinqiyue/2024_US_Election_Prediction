@@ -14,7 +14,7 @@ library(tidyr)
 library(arrow)
 
 #### Clean data ####
-president_polls_raw_data <- read.csv('data/01-raw_data/president_polls.csv')
+president_polls_raw_data <- read_parquet('data/01-raw_data/president_polls.parquet')
 
 # filter out high quality polls（numeric_grade >= 2.5)
 president_polls_filtered <- president_polls_raw_data %>% 

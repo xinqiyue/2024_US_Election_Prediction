@@ -20,6 +20,7 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
+library(arrow)
 ```
 
 ```{r}
@@ -27,7 +28,7 @@ library(tidyverse)
 #| warning: false
 #| message: false
 # load data
-president_polls_cleaned_data <- read.csv('../data/02-analysis_data/president_polls_cleaned_data.csv')
+president_polls_cleaned_data <- read_parquet('../data/02-analysis_data/president_polls_cleaned_data.parquet')
 # transfer date to standard form
 president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_date)
 ```

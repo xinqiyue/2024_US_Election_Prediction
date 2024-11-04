@@ -10,8 +10,9 @@
 #### Workspace setup ####
 library(tidyverse)
 library(testthat)
+library(arrow)
 
-analysis_data <- read_csv("data/02-analysis_data/president_polls_cleaned_data.csv")
+analysis_data <- read_parquet("data/02-analysis_data/president_polls_cleaned_data.parquet")
 
 
 #### Test data ####
