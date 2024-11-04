@@ -1,6 +1,6 @@
 ---
 title: "Forecasting the 2024 US Presidential Election"
-subtitle: "A Poll-of-Polls Approach Using Generalized Linear Modeling"
+subtitle: "A Poll-of-Polls Approach Using Bayesian Modeling"
 author: 
   - Xinqi Yue
   - Yawen Tan
@@ -8,7 +8,7 @@ author:
 thanks: "Code and data are available at: [https://github.com/xinqiyue/2024_US_Election_Prediction](https://github.com/xinqiyue/2024_US_Election_Prediction)."
 date: today
 date-format: long
-abstract: "This paper builds a predictive model to forecast the 2024 US presidential election using a “poll-of-polls” approach, analyzing high-quality polls for Kamala Harris and Donald Trump. The model incorporates data on polling methodology, state trends, and candidate support. Our findings indicate that xxxxxxxx. This study contributes to a deeper understanding of electoral forecasting, helping us interpret aggregated polling data to anticipate election results accurately."
+abstract: "This paper builds a predictive Bayesian model to forecast the 2024 US presidential election using a “poll-of-polls” approach, analyzing high-quality polls for Kamala Harris and Donald Trump. The model incorporates data on polling methodology, state trends, and candidate support. Our findings indicate that xxxxxxxx. This study contributes to a deeper understanding of electoral forecasting, helping us interpret aggregated polling data to anticipate election results accurately."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -61,7 +61,7 @@ The 2024 U.S. presidential election is generating significant public interest, w
 
 In this paper, we explore the following questions: How is support for each candidate likely to evolve as the election approaches? How do regional differences influence overall voter sentiment? This paper contributes to electoral forecasting literature by synthesizing aggregated polling data to provide a nuanced view of candidate support trends.
 
-# Estimand
+## Estimand
 
 Our primary estimand is the percentage of voter support for Donald Trump and Kamala Harris on election day. We estimate this support percentage both at the national level and by state, incorporating time and state-specific effects.
 
@@ -123,7 +123,7 @@ knitr::kable(head_analysis_data[, 1:5], format = "simple", col.names = c('State'
 - **transparency score**: A measure of how openly the pollster reports their methodology and results. Higher scores suggest greater transparency and reliability.
 
 ## Measurement
-The goal of this measurement is to turn individual voter opinions into a reliable estimate of electoral college outcomes by analyzing polling data. This data, sourced from @fivethirty—a trusted platform known for high standards—includes only polls that meet rigorous quality criteria, ensuring broad representation of likely U.S. voters. Polls provide essential details, such as the pollster’s identity, survey dates, sample size, and methodology, covering data collection mode, demographic weighting, and adjustments to create a representative sample. These quality standards, while robust, are based on historical practices, which may overlook recent methodological shifts or emerging biases.
+The goal of this measurement is to turn individual voter opinions into a reliable estimate of electoral college outcomes by analyzing polling data. This data, sourced from @fivethirtyeight—a trusted platform known for high standards—includes only polls that meet rigorous quality criteria, ensuring broad representation of likely U.S. voters. Polls provide essential details, such as the pollster’s identity, survey dates, sample size, and methodology, covering data collection mode, demographic weighting, and adjustments to create a representative sample. These quality standards, while robust, are based on historical practices, which may overlook recent methodological shifts or emerging biases.
 
 ## Limitation
 Polling has inherent limitations. It provides snapshots of voter sentiment at specific times rather than ongoing updates, potentially missing rapid shifts in public opinion, especially near Election Day. Adjustments are made for recency, but participation and response biases—like self-selection and social desirability bias—can still impact accuracy by creating gaps between expressed opinions and actual voting behavior. Additionally, regional polling disparities, with battleground states polled more frequently than “safe” states, can lead to imbalances in representation, highlighting the challenge of achieving uniformly accurate forecasts across the nation.
@@ -177,8 +177,6 @@ ggplot(data = president_polls_cleaned_data, aes(x = end_date, y = pct, color = c
 
 # Model
 In this analysis, we use a Bayesian linear regression model to estimate the percentage of support (`pct`) for each candidate in the upcoming US presidential election. The model includes key predictors such as polling end date (`end_date`), candidate (`candidate_name`), sample size (`sample_size`), and state (`state`). Each predictor is selected based on its relevance to the variation in candidate support, as discussed in the data section.
-
-## Model set-up
 
 ## Model set-up
 
@@ -299,6 +297,78 @@ In conclusion, while this paper offers valuable insights into electoral dynamics
 \appendix
 
 # Appendix {-}
+
+# Methodology Analysis of Texas Politics Project Poll
+
+## Introduction
+This section provides a comprehensive examination of the methodology utilized by YouGov for the October 2024 Texas Statewide Survey, emphasizing the reliability of the organization and its methods, along with a critical analysis of the survey's strengths, weaknesses, and potential improvements.
+
+## Population, Frame, and Sample
+
+- **Population**: The survey aimed to represent Texas registered voters, defined as individuals who meet the eligibility requirements to vote in Texas, including age, residency, and registration status. This demographic is critical given the state’s political landscape and upcoming elections.
+  
+- **Frame**: The sampling frame is the specific population from which a sample is drawn, constructed from diverse data sources to ensure validity. Key components included:
+  - **American Community Survey (ACS)**: This provides demographic information that reflects the socio-economic characteristics of Texas residents, essential for establishing a representative sampling frame.
+  - **Public voter registration records**: These ensure that the survey captures a valid sample of registered voters, allowing for accurate political representation.
+  - **2020 Current Population Survey (CPS)** and **National Election Pool (NEP) exit polls**: These sources offer insights into voting behaviors and preferences, enriching the sampling frame with relevant context and historical data.
+
+- **Sample Size**: The initial sample comprised 1,338 respondents, which was refined to 1,200 for the final dataset through a process known as matching. This process enhances the demographic representativeness of the sample across key characteristics such as gender, age, race, and education.
+
+## Sample Recruitment
+
+- **Recruitment Methods**: YouGov employs a proprietary opt-in survey panel that includes approximately 1.5 million U.S. residents. Key recruitment methods include:
+  - **Web Advertising Campaigns**: Targeted ads based on keyword searches increase the likelihood of engaging relevant respondents, leveraging digital platforms for broad reach.
+  - **Permission-Based Email Campaigns**: This method allows for direct outreach to potential participants who have expressed interest in surveys, ensuring a more willing and engaged respondent pool.
+  - **Telephone-to-Web and Mail-to-Web Recruitment**: These methods broaden the outreach, ensuring access to respondents who may not engage online, thus increasing the overall sample diversity.
+
+- **Diversity and Representation**: The multifaceted recruitment strategy is designed to mitigate biases and enhance the demographic diversity of the panel. This is essential for capturing a representative sample in a politically diverse state like Texas.
+
+## Sampling Approach and Trade-offs
+
+- **Two-Stage Sampling Approach**: 
+  1. **Target Sample Selection**: A probability sample is drawn from the defined target population, ensuring it accurately reflects the demographic composition of Texas. Probability sampling means that each individual in the population has a known, non-zero chance of being selected.
+  2. **Matched Sample Selection**: Each target sample member is matched to one or more respondents from the YouGov panel, utilizing a set of variables available in consumer and voter databases. Matching involves finding respondents in the panel who share key demographic and behavioral traits with the target sample.
+
+- **Strengths**: This methodology allows for the creation of a sample that closely mirrors the target population’s characteristics, theoretically increasing the external validity of the survey results—external validity refers to the extent to which findings can be generalized to a broader context beyond the study sample.
+
+- **Weaknesses**:
+  - **Non-Random Selection**: The reliance on an opt-in panel introduces potential biases associated with self-selection. Respondents who choose to participate may differ significantly from those who do not, potentially affecting the survey's internal validity (the degree to which the survey accurately measures what it intends to measure).
+  - **Matching Limitations**: While proximity matching aims to find the closest respondents, it may not account for all variables that could influence responses, leading to unobserved biases. Unobserved biases occur when factors influencing survey responses are not measured or controlled for in the analysis.
+
+## Handling Non-Response
+
+- **Weighting Strategy**: To address non-response bias, YouGov implemented a robust weighting methodology:
+  - **Propensity Score Adjustment**: This involves estimating the likelihood of response based on demographic characteristics, which are then used to weight the matched cases back to the target population. Propensity score weighting is a statistical technique that adjusts for differences in observed characteristics between respondents and non-respondents.
+
+- **Challenges**: The success of this strategy hinges on accurate assumptions regarding non-response characteristics, which can be difficult to ascertain. If the reasons for non-response are systematically related to the survey topics or demographics, this could undermine the validity of the results, highlighting the importance of addressing potential non-response bias.
+
+## Questionnaire Evaluation
+
+- **Question Design**: The YouGov questionnaire included a series of structured questions aimed at eliciting clear responses regarding voter preferences and opinions on key issues. Structured questions are those that offer fixed response options, facilitating easier analysis.
+
+- **Pros**:
+  - **Clarity and Relevance**: Questions were designed to be straightforward, addressing current political concerns likely to engage respondents effectively.
+  - **Comprehensive Coverage**: The questionnaire covered a wide array of topics pertinent to the election, providing rich data for analysis and ensuring relevant insights into voter sentiment.
+
+- **Cons**:
+  - **Length and Complexity**: The extensive nature of the questionnaire could lead to respondent fatigue, increasing the likelihood of incomplete or rushed responses, which may affect data quality. Respondent fatigue occurs when participants become tired or disengaged from a survey, leading to lower-quality data.
+  - **Framing and Bias**: The manner in which questions are framed can introduce bias. Questions that lack neutral wording may lead to skewed responses based on how they are interpreted by participants, potentially distorting the data collected.
+
+## Recommendations for Improvement
+
+1. **Enhanced Recruitment Strategies**: Consider integrating more diverse recruitment channels, such as partnerships with community organizations, to reach underrepresented groups who may not be captured through standard methods.
+
+2. **Improved Matching Techniques**: Exploring advanced statistical techniques or machine learning approaches for matching respondents could enhance the accuracy of the matched sample.
+
+3. **Shortening the Questionnaire**: Streamlining the questionnaire to focus on the most critical issues could reduce respondent fatigue and improve engagement, ensuring higher quality data collection.
+
+4. **Pilot Testing**: Implementing pilot surveys to test question clarity and structure could help identify potential biases or misunderstandings before full deployment, ensuring that the questions effectively capture the desired information.
+
+5. **Transparency in Weighting Methods**: Clearly communicating the assumptions and methods used in weighting would enhance transparency and allow for a more critical evaluation of the findings, fostering trust in the results.
+
+## Conclusion
+
+In summary, YouGov’s methodology for the October 2024 Texas Statewide Survey demonstrates several strengths, particularly in its diverse recruitment strategies and thorough weighting processes. However, inherent challenges associated with opt-in panels, matching techniques, and questionnaire design warrant careful consideration. By addressing these weaknesses and implementing the suggested improvements, the reliability and validity of future surveys can be enhanced, ultimately providing richer insights into voter behavior and preferences.
 
 
 # Additional data details
