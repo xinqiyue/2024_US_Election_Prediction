@@ -13,4 +13,4 @@ library(tidyverse)
 president_polls_raw_data <- read_csv("https://projects.fivethirtyeight.com/polls/data/president_polls.csv")
 
 #### Save data ####
-write_parquet(president_polls_raw_data, "data/01-raw_data/president_polls.parquet")
+write_csv(president_polls_raw_data, "data/01-raw_data/president_polls.csv")

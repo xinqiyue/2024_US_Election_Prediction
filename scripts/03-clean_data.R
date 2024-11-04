@@ -14,7 +14,7 @@ library(tidyr)
 library(arrow)
 
 #### Clean data ####
-president_polls_raw_data <- read_parquet('data/01-raw_data/president_polls.parquet') # import raw data
+president_polls_raw_data <- read_csv('data/01-raw_data/president_polls.csv') # import raw data
 
 president_polls_filtered <- president_polls_raw_data %>% 
   janitor::clean_names() %>% # correct name to standard form
