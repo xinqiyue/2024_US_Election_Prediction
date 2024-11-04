@@ -298,13 +298,12 @@ In conclusion, while this paper offers valuable insights into electoral dynamics
 
 # Appendix {-}
 
-# Methodology Analysis of Texas Politics Project Poll
+# Methodology Analysis of Texas Politics Project Poll{#sec-Appendix1}
 
 ## Introduction
-This section provides a comprehensive examination of the methodology utilized by YouGov for the October 2024 Texas Statewide Survey, emphasizing the reliability of the organization and its methods, along with a critical analysis of the survey's strengths, weaknesses, and potential improvements.
+This section provides a examination of the methodology utilized by YouGov for the October 2024 Texas Statewide Survey (@blank2024), stating the reliability of the organization and its methods, along with an analysis of the survey's strengths, weaknesses, and potential improvements.
 
 ## Population, Frame, and Sample
-
 - **Population**: The survey aimed to represent Texas registered voters, defined as individuals who meet the eligibility requirements to vote in Texas, including age, residency, and registration status. This demographic is critical given the state’s political landscape and upcoming elections.
   
 - **Frame**: The sampling frame is the specific population from which a sample is drawn, constructed from diverse data sources to ensure validity. Key components included:
@@ -370,7 +369,104 @@ This section provides a comprehensive examination of the methodology utilized by
 
 In summary, YouGov’s methodology for the October 2024 Texas Statewide Survey demonstrates several strengths, particularly in its diverse recruitment strategies and thorough weighting processes. However, inherent challenges associated with opt-in panels, matching techniques, and questionnaire design warrant careful consideration. By addressing these weaknesses and implementing the suggested improvements, the reliability and validity of future surveys can be enhanced, ultimately providing richer insights into voter behavior and preferences.
 
+# Appendix: Idealized Methodology and Survey {#sec-Appendix2}
 
+## Objective and Overview
+This survey methodology aims to forecast the U.S. presidential election outcome by gathering representative data from a diverse cross-section of American voters. The target population includes all eligible U.S. voters, spanning a wide array of demographic backgrounds. With a budget of $100,000, this methodology employs probability sampling techniques, effective recruitment, and thorough data validation protocols to ensure data accuracy and minimize bias. By applying probability sampling, each individual has a known chance of selection, allowing the results to be statistically valid and generalizable. This design accounts for demographic, geographic, and political influences, enhancing prediction reliability [@fivethirty; @pewresearch].
+
+### Core Objectives
+- **Representative Sampling**: Achieve a sample reflecting U.S. voting demographics, ensuring insights are applicable to the entire electorate.
+- **Data Quality**: Implement validation processes, including cross-verification, to ensure accuracy.
+- **Statistical Modeling and Aggregation**: Apply statistical models and aggregate polling data to enhance forecast accuracy, as demonstrated in prior election studies.
+
+## Sampling Strategy
+The sampling strategy combines **stratified random sampling** and **quota sampling** for comprehensive representation across key demographics. Stratified random sampling ensures each subgroup within the population is represented by dividing the population into strata (e.g., age, gender, race) and sampling randomly within each stratum. Quota sampling supplements this by guaranteeing minimum representation across essential demographics.
+
+### Stratification Variables
+- **Age Groups**: 18-29, 30-44, 45-64, 65+
+  - **Gender**: Male, Female, Non-binary/Other
+- **Race/Ethnicity**: White, Black, Hispanic/Latino, Asian, Indigenous, Other
+- **Education Level**: No high school, High school graduate, College graduate, Post-graduate
+- **Income Bracket**: <$30,000, $30,000-$60,000, $60,000-$100,000, >$100,000
+- **Geographic Region**: Northeast, Midwest, South, West
+
+This structure aligns with survey sampling best practices, improving accuracy by ensuring proportional representation [@taherdoost2016sampling; @pewresearch]. However, balancing stratification variables with cost considerations remains a challenge, as over-stratification can be cost-inefficient.
+
+### Sample Size
+To achieve high accuracy, we will survey **10,000 respondents**, which provides a ±1% margin of error at a 95% confidence level. This sample size enables detailed subgroup analyses, such as state or demographic-specific trends, increasing the forecast’s reliability.
+
+### Weighting
+Post-stratification weighting will adjust for any underrepresented or oversampled demographic groups, ensuring the final sample accurately mirrors the voting population [@kalton2003weighting]. For example, younger voters or minorities will be weighted according to their population proportions.
+
+## Recruitment Strategy
+**Multi-channel outreach** (digital ads, email, and civic organization partnerships) will mitigate non-response bias by ensuring diverse respondent participation. This strategy helps correct response imbalances that could distort survey accuracy [@dillman2014internet].
+
+- **Digital Advertisements**: Targeted ads on platforms like Facebook and Instagram to attract diverse demographic groups.
+- **Email Outreach**: Invitations to registered voters via available databases.
+- **Civic Partnerships**: Collaborations with non-profits to enhance diversity and reduce non-response bias.
+- **Incentives**: Participants can enter a lottery for a $100 gift card as motivation.
+
+## Data Validation and Quality Assurance
+Ensuring data integrity is essential for an accurate election forecast. Validation protocols will include:
+  
+  - **Captcha Verification**: To prevent bot entries.
+- **Contact Verification**: Confirm email or phone authenticity.
+- **Response Time Monitoring**: Flag unusually quick completions for review.
+- **Voter Registration Check**: If feasible, confirm registration to verify eligibility.
+- **Audits**: Random follow-ups to verify responses.
+
+These measures align with data integrity standards in electoral polling [@pew_survey_methodology].
+
+## Poll Aggregation and Data Analysis
+### Poll Aggregation
+Using a poll-of-polls approach, this survey’s data will combine with data from reputable polling firms (e.g., YouGov, Ipsos), creating a balanced forecast.
+
+- **Weighting by Methodology and Recency**: Polls are weighted based on methodological rigor and recency, favoring recent data.
+- **Bias and Variability Adjustments**: Aggregated data will adjust for any bias among individual polls.
+
+### Modeling Approach
+**Bayesian hierarchical models** will address variability across states, demographics, and regions, enabling both popular vote and Electoral College predictions.
+
+## Budget Allocation
+- **Recruitment and Outreach**: $70,000
+- **Incentives**: $10,000
+- **Survey Platform and Administration**: $5,000
+- **Validation Tools**: $5,000
+- **Analysis Software**: $10,000
+
+## Survey Implementation
+The survey will be conducted through **Google Forms**, providing an accessible, cost-effective platform. Access the survey here: [Google Form Survey](https://forms.gle/sAxVuk3n9gV8e2odA).
+
+### Survey Structure
+
+\begingroup
+\small
+
+**Introduction**: Thank you for participating in our survey to forecast the 2024 U.S. Presidential election outcome. Your responses will remain confidential, and participation is voluntary.
+
+**Section 1: Eligibility Screening**:
+  - U.S. citizenship and voter eligibility questions.
+
+**Section 2: Demographics**:
+  - Questions on age, gender, race, education, income, and region.
+
+**Section 3: Political Views and Voting Intentions**:
+  - Likelihood of voting, party affiliation, candidate choice, and issue importance.
+
+**Section 4: Engagement and Information Sources**:
+  - Questions about primary news sources and engagement with election coverage.
+
+**End Message**: Thank you for your time. For survey inquiries, please contact [duanyi.su@mail.utoronto.ca](mailto:duanyi.su@mail.utoronto.ca).
+
+\endgroup
+
+---
+  
+### Design Considerations
+- **Question Wording**: Structured to be clear, neutral, and direct.
+- **Pilot Testing**: A pre-deployment pilot will refine the question flow, ensuring clarity and ease for respondents.
+
+\newpage
 # Additional data details
 
 # Model details {#sec-model-details}
