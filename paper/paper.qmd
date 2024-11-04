@@ -1,6 +1,6 @@
 ---
-title: "Forecasting the 2024 US Presidential Election"
-subtitle: "A Poll-of-Polls Approach Using Bayesian Modeling"
+title: "Predicting Electoral Outcomes: Bayesian Modeling of Voter Support Trends for Kamala Harris and Donald Trump in the 2024 Presidential Election"
+subtitle: ""
 author: 
   - Xinqi Yue
   - Yawen Tan
@@ -39,8 +39,6 @@ president_polls_cleaned_data <- read_parquet('../data/02-analysis_data/president
 president_polls_cleaned_data$end_date <- ymd(president_polls_cleaned_data$end_date)
 ```
 
-
-
 # Introduction
 The 2024 U.S. presidential election is generating significant public interest, with recent polling reflecting shifts in candidate support across various demographic and regional groups. Polling data, while insightful, presents challenges due to inherent biases, variability in polling methodology, and regional influences on voter behavior. This study aims to address these challenges using a "poll-of-polls" approach, aggregating high-quality national and state polls to forecast voter support for Kamala Harris and Donald Trump. By applying Bayesian modeling, this analysis incorporates both the temporal dynamics of candidate support and state-specific trends.
 
@@ -59,7 +57,9 @@ Our primary estimand is the percentage of voter support for Donald Trump and Kam
 ## Data Overview {#sec-data-overview}
 @sec-data centers on a polling dataset for Donald Trump and Kamala Harris, filtered for quality by including only results from pollsters with a numeric grade above 2.5. Key variables such as state, end date, sample size, candidate name, and support percentage (pct) are identified. The data cleaning process standardizes column names, retains relevant fields, and addresses missing values to ensure high-quality data for analysis. The section includes a table presenting the first six entries of the cleaned analysis dataset, alongside multiple graphs: a bar graph comparing candidate support percentages by state, scatter plots illustrating trends in candidate support over time, and visualizations examining the relationship between sample size and support percentages. 
 
-The analysis utilizes FiveThirtyEight's dataset of national presidential general election polls [@fivethirtyeight]. Following the approach outlined in [@tellingstories], we aim to predict the election outcome based on this polling data. The analyses were conducted in R @citeR, with support from several packages. The `tidyverse` packages [@citetidyverse] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], data cleaning process was done by using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], and `arrow` package [@citearrow]. Then, models were constructed using `tidyverse` package [@citetidyverse], `lubridate` package [@citelubridate], `rstanarm` [@citerstanarm] package, and `splines` package [@citesplines]. The model results are then presented by `modelsummary` [@citemodelsummary] package, and graphs were made with `ggplot2` package [@citeggplot].
+The analysis utilizes FiveThirtyEight's dataset of national presidential general election polls [@fivethirtyeight]. Following the approach outlined in [@tellingstories], we aim to predict the election outcome based on this polling data. The analyses were conducted in R [@citeR], utilizing several packages to streamline the process. The tidyverse packages [@citetidyverse] were essential for data simulation and preliminary testing. Initially, the raw data was downloaded using the arrow package [@citearrow], allowing for efficient handling of large datasets. The data cleaning process employed the dplyr [@citedplyr] and tidyr [@citetidyr] packages to reshape and organize the data effectively.
+
+Model construction involved the rstanarm [@citerstanarm] package for Bayesian regression modeling, complemented by the splines package [@citesplines] to account for non-linear relationships in the data. The results were summarized using the modelsummary [@citemodelsummary] package, while visualizations of the findings were created with the ggplot2 [@citeggplot] package, ensuring clear communication of the model's outputs.
 
 
 ## Data Clean
@@ -143,9 +143,6 @@ ggplot(data = president_polls_cleaned_data, aes(x = state, y = pct, fill = candi
 #| message: false
 #| fig-width: 7
 #| fig-height: 3
-
-# Load ggplot2
-library(ggplot2)
 
 ggplot(data = president_polls_cleaned_data, aes(x = end_date, y = pct, color = candidate_name, group = candidate_name)) +
   #geom_line(size = 1,alpha = 0.5) + 
