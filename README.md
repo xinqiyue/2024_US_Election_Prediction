@@ -1,4 +1,5 @@
-# Forecasting the 2024 US Presidential Election：A Poll-of-Polls Approach Using Bayesian Modeling
+# Predicting Electoral Outcomes: Bayesian Modeling of Voter Support Trends for Kamala Harris and Donald Trump in the 2024 Presidential Election"
+## Predictions shows higher likelyhood for Harris to be the Winner
 
 ## Overview
 This study examines the dynamics of voter support for the 2024 U.S. Presidential Election, focusing on candidates Kamala Harris and Donald Trump. Given the heightened public interest and the complexities of polling data, we adopt a "poll-of-polls" methodology, aggregating high-quality national and state polls to forecast candidate support. By utilizing Bayesian modeling, this analysis captures both the temporal dynamics and state-specific trends influencing voter behavior.
@@ -21,4 +22,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The title, abstract, readme file and Appendix A were written with the help of ChatGPT_4o and the entire chat history is available in inputs/llms/usage.txt.
+Aspects of the code were written with the help of ChatGPT_4o. The title, abstract, readme file and Appendix A were written with the help of ChatGPT_4o and the entire chat history is available in inputs/llms/usage.txt.
